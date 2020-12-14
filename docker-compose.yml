@@ -1,0 +1,97 @@
+version: "3"
+
+services:
+  nuxt:
+    build: ./frontend/nuxt-fe
+    restart: on-failure
+    container_name: nuxt-app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - apihub
+    volumes: 
+      - ./frontend/nuxt-fe:/app
+    command: npm run dev
+
+  nginx:
+    build: ./nginx/
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - nuxt
+
+  celery:
+    container_name: celery
+    build: ./celery/ 
+    volumes:
+      - ./celery/server.py:/celery/server.py 
+      - ./celery/worker.py:/celery/worker.py 
+    environment: 
+      REDISSERVER: redis://redis
+      RABBITMQ: pyamqp://rabbitmq
+    depends_on: 
+      - redis
+      - rabbitmq
+
+  apihub:
+    build: ./backend/
+    container_name: apihub
+    restart: on-failure
+    environment: 
+      REDISSERVER: redis://redis
+      RABBITMQ: pyamqp://rabbitmq
+    volumes:
+      - type: bind
+        source: ./backend/api.py
+        target: /usr/app/api.py
+      - type: bind
+        source: ./backend/req.txt
+        target: /usr/app/req.txt
+      - type: bind
+        source: ./backend/main.py
+        target: /usr/app/main.py
+      - type: bind
+        source: ./backend/core.py
+        target: /usr/app/core.py
+      - type: bind
+        source: ./backend/server.py
+        target: /usr/app/server.py
+      - type: bind
+        source: ./backend/master.pptx
+        target: /usr/app/master.pptx
+
+    command: uvicorn --host=0.0.0.0 --port=8000 api:app --reload
+    ports:
+      - "8000:8000"
+    depends_on: 
+      - redis
+      - rabbitmq
+
+  redis:
+    container_name: redis
+    image: redis:6.0-buster
+    ports:
+      - "6379:6379"
+  
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.8-management
+    ports: 
+      - "15672:15672"
+
+  flower:
+    container_name: flower
+    image: mher/flower:0.9.5
+    command: ["flower", "--broker=amqp://rabbitmq", "--port=5555"]
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - rabbitmq
+      - celery
+    
+    

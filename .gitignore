@@ -1,0 +1,13 @@
+
+*.ipynb_checkpoints
+*.vscode
+
+/__pycache__
+
+data.json
+*.DS_Store
+*.ipynb
+*.pptx
+/backend/output
+*.pyc
+*.log
