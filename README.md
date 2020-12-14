@@ -1,4 +1,4 @@
-# knowliy
+# knowlix
 
 Microservice to autmatically create onboarding slides
 
