@@ -1,4 +1,4 @@
-# pptx-tool
+# knowlix with mongodb as backend
 
 Microservice to autmatically create onboarding slides
 
