@@ -1,4 +1,4 @@
-# pptx-tool
+# knowliy
 
 Microservice to autmatically create onboarding slides
 
