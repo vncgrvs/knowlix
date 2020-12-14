@@ -11,3 +11,4 @@ data.json
 /backend/output
 *.pyc
 *.log
+mongodb/
