@@ -1,4 +1,4 @@
-# knowlix with mongodb as backend
+# knowlix - mongodb 
 
 Microservice to autmatically create onboarding slides
 
