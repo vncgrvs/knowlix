@@ -149,6 +149,10 @@ export default {
   watch: {
     $route(to, from) {
       this.$store.commit("changeCurrentRoute", to.name);
+      
+      if (to.name == "downloads"){
+        this.$store.dispatch("clearAlertList");
+      }
     },
   },
 };

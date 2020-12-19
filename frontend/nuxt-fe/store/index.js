@@ -12,6 +12,13 @@ export const state = () => ({
 })
 
 export const mutations = {
+  initialiseStore(state){
+    console.log(localStorage.getItem('taskList'))
+    if (localStorage.getItem('taskList')){
+      state.taskList = JSON.parse(localStorage.getItem('taskList'))
+    }
+    
+  },
   updateList(state, payload) {
     state.list = payload
   },
@@ -63,6 +70,13 @@ export const mutations = {
   deleteTaskAlert(state, payload) {
     state.tasksAlerts.splice(payload, 1);
   },
+  clearAlertList(state){
+    this.state.tasksAlerts = []
+  },
+  updateLocalStorage(state){
+    let taskList = state.taskList
+    localStorage.setItem('taskList',JSON.stringify(taskList))
+  },
   addTask(state, payload) {
     var date = new Date()
 
@@ -104,27 +118,26 @@ export const actions = {
   },
   updateTask({commit}, payload){
     commit('updateTask', payload)
+    commit('updateLocalStorage');
   },
   deleteListItem({ commit }, payload) {
     commit('deleteListItem', payload);
+  },
+  
+  clearAlertList({commit}){
+    commit('clearAlertList');
+
   },
   async sendTask({ commit }) {
 
     let onBoardingDeck = JSON.stringify({ "sections": this.state.userChoice })
     commit('changeDownloadCount');
-
-
-
     var config = {
-
-
       headers: {
         'Content-Type': 'application/json',
-
       },
 
     };
-
 
     const send = await this.$axios.$post('/v1/pptxjob', onBoardingDeck, config)
       .then((res) => {
@@ -132,6 +145,7 @@ export const actions = {
         commit('changeDownloadStatus');
         commit('addTaskAlert', res.taskID);
         commit('addTask', res)
+        commit('updateLocalStorage');
 
       });
 

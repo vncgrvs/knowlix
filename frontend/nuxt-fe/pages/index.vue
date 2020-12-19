@@ -35,6 +35,7 @@ export default {
   data() {
     return {};
   },
+  
   mounted() {
     
     this.ws_success = new WebSocket('ws://localhost:3333/tasks') 
