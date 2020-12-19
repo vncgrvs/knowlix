@@ -43,7 +43,8 @@ export default {
     
     this.ws_success.onmessage = function(event){
       var data = JSON.parse(event.data)
-      var taskID = data.taskID
+      
+      var taskID = data.data.kwargs.customID
       var status = data.data.status
       var tList = this.$store.state.taskList
       

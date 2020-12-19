@@ -13,7 +13,7 @@ export const state = () => ({
 
 export const mutations = {
   initialiseStore(state){
-    console.log(localStorage.getItem('taskList'))
+    
     if (localStorage.getItem('taskList')){
       state.taskList = JSON.parse(localStorage.getItem('taskList'))
     }

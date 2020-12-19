@@ -38,6 +38,7 @@ services:
     volumes:
       - ./celery/server.py:/celery/server.py 
       - ./celery/worker.py:/celery/worker.py 
+      - pptxdecks:/celery/output
     environment: 
       MONGODB: mongodb://mongodb2
       RABBITMQ: pyamqp://rabbitmq
@@ -105,9 +106,10 @@ services:
     container_name: apihub
     restart: on-failure
     environment: 
-      MONGODB: mongodb://mongodb1
+      MONGODB: mongodb://mongodb2
       RABBITMQ: pyamqp://rabbitmq
     volumes:
+      - pptxdecks:/usr/app
       - type: bind
         source: ./backend/api.py
         target: /usr/app/api.py
@@ -161,3 +163,6 @@ services:
     
 networks:
   mongonetwork:
+
+volumes: 
+  pptxdecks:

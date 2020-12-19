@@ -18,8 +18,12 @@ rs.initiate(
     ]
   }
 )
-
+EOF
+echo "replicas created"
+sleep 10
+echo "setting mongodb2 as primary ..."
+mongo --host mongodb1 <<EOF
 rs.stepDown()
 EOF
-echo "replicas created & replica2 set to primary"
 
+echo "set mongodb2 as primary"

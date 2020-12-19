@@ -9,11 +9,16 @@ import os
 from pptx import Presentation
 from server import celery
 import json
+import uuid
 from datetime import datetime
+from pymongo import MongoClient
 
 
 file_path = "master.pptx"
 pres= Presentation(file_path)
+MONGODB= os.getenv("MONGODB")
+client=MongoClient(MONGODB)
+db = client["taskdb"]["ta"]
 
 tags_metadata= [
     {
@@ -46,6 +51,9 @@ app.add_middleware(
 
 class PPTX(BaseModel):
     sections: List[str]
+
+class Download(BaseModel):
+    taskID: str
     
     
 @app.get("/v1/sections", tags = ["powerpoint"])
@@ -63,23 +71,37 @@ async def provide_sections():
 async def deliver_pptx(pptx: PPTX):
     task_name = "pptx"
     sections = pptx.sections
+    custom_id = str(uuid.uuid4().hex)
     kwargs ={
         'sections':sections,
+        'customID': custom_id
         
         }
     
-
-
     task = celery.send_task(task_name, kwargs = kwargs, serializer='json')
 
     package = {
-        'taskID': task.id,
+        'taskID': custom_id,
         'sections': sections
     }
 
     
     return JSONResponse(package)
     
+@app.post("/v1/download", tags = ["job management"])
+async def download_pptx(download: Download):
+
+    task_id = download.taskID
     
+
+    result = db.find_one({"kwargs.customID": task_id},{'result':1, '_id': 0})
+    unpack = result["result"]
+    unpack = json.loads(unpack)
+    file_path = unpack["filePath"]
+
+    
+
+    return file_path
+    # return FileResponse(file_path)  
     
     

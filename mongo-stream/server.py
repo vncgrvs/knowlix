@@ -32,6 +32,7 @@ class ChangesHandler(tornado.websocket.WebSocketHandler):
 
     @classmethod
     def on_change(cls, change):
+        
 
         message = {
             'operation':change['operationType'],
