@@ -36,8 +36,8 @@ class ChangesHandler(tornado.websocket.WebSocketHandler):
         message = {
             'operation':change['operationType'],
             'data':change['fullDocument'],
-            'taskID': change['documentKey']['_id'],
-            'updated':change['updateDescription']
+            'taskID': change['documentKey']['_id']
+            
         }
         
         # message = f"{change['operationType']}: {change['fullDocument']}"
