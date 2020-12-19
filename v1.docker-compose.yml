@@ -59,6 +59,8 @@ services:
       - "3333:3333"
     depends_on: 
       - mongo-startup
+      - mongodb1
+      - mongodb2
     volumes: 
       - ./mongo-stream/server.py:/usr/app/server.py
     networks: 

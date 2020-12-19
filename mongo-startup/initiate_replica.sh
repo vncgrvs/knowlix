@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Starting replica set initialize"
-until mongo --host mongodb1 --eval "print(\"waited for connection\")"
+until mongo --host mongodb1 --eval "print(\"waited for connection\")" && mongo --host mongodb2 --eval "print(\"waited for connection 2\")"
 do
     sleep 2
 done
@@ -18,27 +18,8 @@ rs.initiate(
     ]
   }
 )
-EOF
-sleep 7
-#  setting mongodb2 as PRIMARY
-mongo --host mongodb1 <<EOF
-cfg = rs.conf()
-cfg.members[0].priority = 0
-cfg.members[1].priority = 1
-rs.reconfig(cfg)
-EOF
-echo "replica set created & first attempt to set primary"
 
-echo "start sleep"
-sleep 10
-echo "end sleep"
-
-#  setting mongodb2 as PRIMARY
-mongo --host mongodb2 <<EOF
-cfg = rs.conf()
-cfg.members[0].priority = 0
-cfg.members[1].priority = 1
-rs.reconfig(cfg)
+rs.stepDown()
 EOF
+echo "replicas created & replica2 set to primary"
 
-echo "second attempt to set primary"
