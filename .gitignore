@@ -12,3 +12,4 @@ data.json
 *.pyc
 *.log
 mongodb/
+db-backup/

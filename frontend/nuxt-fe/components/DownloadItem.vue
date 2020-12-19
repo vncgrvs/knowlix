@@ -99,12 +99,12 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="task in this.$store.state.taskList" :key="task.id">
+                  <tr v-for="(task, index) in this.$store.state.taskList" :key="index">
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex items-center">
+                      <div class="flex items-center justify-center">
                         <div class="">
-                          <div class="text-sm font-medium text-gray-900">
-                            {{ task.taskID }}
+                          <div class="text-lg font-bold text-gray-900">
+                            {{ index + 1}}
                           </div>
                         </div>
                       </div>
@@ -149,6 +149,7 @@
                       class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
                     >
                       <a href="#" class="text-indigo-600 hover:text-indigo-900"
+                      v-if="task.status === 'done'"
                         >Download</a
                       >
                     </td>

@@ -9,6 +9,7 @@ import os
 from pptx import Presentation
 from server import celery
 import json
+from datetime import datetime
 
 
 file_path = "master.pptx"
@@ -64,7 +65,7 @@ async def deliver_pptx(pptx: PPTX):
     sections = pptx.sections
     kwargs ={
         'sections':sections,
-        'downloadStatus': 'ready'
+        
         }
     
 

@@ -5,24 +5,22 @@ from celery import Celery
 from time import sleep
 from celery.exceptions import Ignore
 from pptx import Presentation
-import redis
+
 from pptx_handler import create_pptx
 import json
 
-CELERY_BROKER_URL = os.getenv("RABBITMQ")
-CELERY_RESULT_BACKEND = os.getenv("REDISSERVER")
+
 from server import app
 
 
 
 @app.task(name='pptx', bind=True, max_retries=3)
-def generate_pptx(self, sections, downloadStatus):
+def generate_pptx(self, sections):
 
     try:
         pptx_path = "master.pptx"
         task_id=self.request.id
-        # task_prefix = "celery-task-meta-"
-        # task_str = task_prefix + task_id
+        
         
 
         pres= Presentation(pptx_path)

@@ -47,7 +47,18 @@ export const mutations = {
     this._vm.$set(state.tasksAlerts, state.tasksAlerts.length, payload)
   },
   updateTask(state,payload){
-    state.taskList[payload].status = "done"
+    let status = payload.status
+    let index = payload.index
+
+    if (status == "SUCCESS"){
+      state.taskList[index].status = "done"
+    }
+    else if (status == "FAILURE"){
+      state.taskList[index].status = "failed"
+    }
+    else if (status == "RETRY"){
+      state.taskList[index].status = "retry"
+    }
   },
   deleteTaskAlert(state, payload) {
     state.tasksAlerts.splice(payload, 1);

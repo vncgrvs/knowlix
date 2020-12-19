@@ -42,7 +42,7 @@ export default {
   },
 
   mounted() {
-    setTimeout(this.hideAlert, 6000, this.pkey);
+    setTimeout(this.hideAlert, 3000, this.pkey);
   },
 };
 </script>
