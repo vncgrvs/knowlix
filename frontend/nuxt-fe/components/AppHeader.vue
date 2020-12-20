@@ -138,6 +138,8 @@ export default {
   },
 
   methods: {
+    
+
     downloadPptx() {
       this.$store.commit("changeDownloadStatus");
       this.$store.dispatch("sendTask");

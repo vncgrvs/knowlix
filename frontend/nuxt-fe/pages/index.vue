@@ -1,11 +1,12 @@
 <template>
   <div class="w-full h-full sortable bg-gray-100">
     <div class="fixed w-full pt-5">
-      <alertJob
-        v-for="(task, id) in this.$store.state.tasksAlerts"
-        :key="task.id"
+      <alert
+        v-for="(alert, id) in this.$store.state.tasksAlerts"
+        :key="id"
         :pkey="id"
-        :taskname="task"
+        :alertID="alert.alertID"
+        :alertType="alert.alertType"
       />
     </div>
     <Section />
@@ -14,13 +15,13 @@
 
 <script>
 import Section from "../components/Section";
-import alertJob from "../components/alertJob";
+import alert from "../components/alert";
 
 
 export default {
   components: {
     Section,
-    alertJob,
+    alert,
   },
   computed: {},
 
@@ -39,10 +40,11 @@ export default {
   mounted() {
     
     this.ws_success = new WebSocket('ws://localhost:3333/tasks') 
-    console.log('connected to WS')
+    
     
     this.ws_success.onmessage = function(event){
       var data = JSON.parse(event.data)
+      
       
       var taskID = data.data.kwargs.customID
       var status = data.data.status
