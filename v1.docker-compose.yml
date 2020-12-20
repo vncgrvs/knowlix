@@ -109,7 +109,7 @@ services:
       MONGODB: mongodb://mongodb2
       RABBITMQ: pyamqp://rabbitmq
     volumes:
-      - pptxdecks:/usr/app
+      - pptxdecks:/usr/app/output
       - type: bind
         source: ./backend/api.py
         target: /usr/app/api.py
