@@ -101,7 +101,7 @@ async def download_pptx(download: Download):
 
     
 
-    return file_path
-    # return FileResponse(file_path)  
+    # return file_path
+    return FileResponse(file_path)  
     
     

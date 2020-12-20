@@ -149,8 +149,11 @@
                     <td
                       class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
                     >
-                      <a href="#" class="text-indigo-600 hover:text-indigo-900"
+                      <a 
+                      class="text-indigo-600 hover:text-indigo-900 cursor-pointer"
                       v-if="task.status === 'done'"
+                      @click="getDownload(task.taskID)"
+                      
                         >Download</a
                       >
                     </td>
@@ -177,6 +180,10 @@ export default {
 
       table.order.listener("#update", id);
     },
+    getDownload: function(taskID){
+      // console.log(taskID)
+      this.$store.dispatch("downloadPresentation",taskID)
+    }
   },
   created() {
     if(process.browser){

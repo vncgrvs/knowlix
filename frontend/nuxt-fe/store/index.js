@@ -150,5 +150,30 @@ export const actions = {
       });
 
 
+  },
+
+  async downloadPresentation({commit},task){
+    let taskID = JSON.stringify({ "taskID": task })
+    
+    var config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept':'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      },
+    };
+
+    const send = await this.$axios.$post('/v1/download',taskID,config)
+      .then((res) => {
+      
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Onboarding.pptx'); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        
+      })
+
   }
 }
