@@ -32,18 +32,17 @@ class ChangesHandler(tornado.websocket.WebSocketHandler):
 
     @classmethod
     def on_change(cls, change):
-        
 
         message = {
-            'operation':change['operationType'],
-            'data':change['fullDocument'],
+            'operation': change['operationType'],
+            'data': change['fullDocument'],
             'taskID': change['documentKey']['_id']
-            
+
         }
-        
+
         # message = f"{change['operationType']}: {change['fullDocument']}"
         # message = f"{change['operationType']}"
-        
+
         ChangesHandler.send_updates(message)
 
 
@@ -81,29 +80,21 @@ def main():
 
 if __name__ == "__main__":
     print("started mongo watcher.")
-    # mongo_db_found = False
-    client = MongoClient(MONGODB)
-    tasks=client["taskdb"]
-    col = tasks["ta"]
-    print('created tasksdb and ta collection')
+    mongo_isLive = False
 
-    # while not mongo_db_found:
-    #     names = client.list_database_names()
-
-    #     if 'taskdb' in names:
-    #         collections=client["taskdb"].list_collection_names()
-
-    #         if 'ta' in collections:
-    #             col = client["taskdb"]["ta"]
-    #             count_docs = int(col.count_documents({}))
-
-    #             if count_docs > 0:
-    #                  mongo_db_found = True
-    #                  print("DB availaible now!")
+    while not mongo_isLive:
+        try:
+            client = MongoClient(MONGODB)
+            tasks = client["taskdb"]
+            col = tasks["ta"]
+            mongo_isLive = True
 
 
-    #     time.sleep(5)
-    #     if not mongo_db_found:
-    #         print("DB not there yet...")
-    
+        except Exception as e:
+            print('error ', e)
+            time.sleep(5)
+        
+
+    print('MongoDB connected to Websocket!')
+
     main()
