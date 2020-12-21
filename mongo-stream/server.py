@@ -32,7 +32,7 @@ class ChangesHandler(tornado.websocket.WebSocketHandler):
 
     @classmethod
     def on_change(cls, change):
-
+        print(change)
         message = {
             'operation': change['operationType'],
             'data': change['fullDocument'],
