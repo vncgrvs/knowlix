@@ -138,6 +138,8 @@ export default {
   },
 
   methods: {
+    
+
     downloadPptx() {
       this.$store.commit("changeDownloadStatus");
       this.$store.dispatch("sendTask");
@@ -149,6 +151,10 @@ export default {
   watch: {
     $route(to, from) {
       this.$store.commit("changeCurrentRoute", to.name);
+      
+      if (to.name == "downloads"){
+        this.$store.dispatch("clearAlertList");
+      }
     },
   },
 };
