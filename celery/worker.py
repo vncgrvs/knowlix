@@ -17,7 +17,7 @@ db = client["taskdb"]["ta"]
 
 
 @app.task(name='pptx', bind=True, max_retries=3)
-def generate_pptx(self, sections, customID):
+def generate_pptx(self, sections, customID,downloaded):
 
     try:
         pptx_path = "master.pptx"

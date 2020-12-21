@@ -50,9 +50,7 @@ export const mutations = {
     state.currentRoute = payload
   },
   addTaskAlert(state, payload) {
-
     state.tasksAlerts.push(payload)
-    // this._vm.$set(state.tasksAlerts, state.tasksAlerts.length, payload)
   },
   updateTask(state, payload) {
     let status = payload.status
@@ -92,8 +90,6 @@ export const mutations = {
         hour12: false
       })
     };
-
-
     state.taskList.push(container);
 
   },
@@ -181,14 +177,21 @@ export const actions = {
     };
 
     const send = await this.$axios.$post('/v1/download', taskID, config)
-      .then((res) => {
+      .then((res,taskID) => {
 
         const url = window.URL.createObjectURL(new Blob([res]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'Onboarding.pptx'); //or any other extension
+        link.setAttribute('download', 'Onboarding.pptx'); 
         document.body.appendChild(link);
         link.click();
+        link.remove()
+
+        const downloadSuccess = await this.$axios.$post('/v1/registerDownload',taskID)
+        .then((res)=>{
+          console.log(res)
+
+        })
 
 
       })

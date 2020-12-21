@@ -49,6 +49,22 @@ services:
       - mongodb2
       - rabbitmq
   
+  celery-beat:
+    container_name: celery-beat
+    build: ./celery-beat/
+    volumes: 
+      - pptxdecks:/celery-beat/output
+    environment: 
+      MONGODB: mongodb://mongodb2
+      RABBITMQ: pyamqp://rabbitmq
+    networks:
+      - mongonetwork
+    depends_on: 
+      - mongodb1
+      - mongodb2
+      - rabbitmq
+      
+  
   mongo-stream:
     container_name: mongo-stream
     restart: on-failure

@@ -57,6 +57,7 @@ class Download(BaseModel):
     taskID: str
 
 
+## API ENDPOINTS ##
 @app.get("/v1/sections", tags=["powerpoint"])
 async def provide_sections():
 
@@ -73,14 +74,15 @@ async def provide_sections():
 async def deliver_pptx(pptx: PPTX):
     task_name = "pptx"
     sections = pptx.sections
-    no_sections=len(sections)
+    no_sections = len(sections)
     sections_available = True
     exists_already = False
-    status=None
+    status = None
     custom_id = str(uuid.uuid4().hex)
     kwargs = {
         'sections': sections,
-        'customID': custom_id
+        'customID': custom_id,
+        'downloaded': False
 
     }
 
@@ -88,17 +90,16 @@ async def deliver_pptx(pptx: PPTX):
         exists_already = check_existence(sections, db)
     else:
         sections_available = False
-    
+
     if not exists_already and sections_available:
         task = celery.send_task(task_name, kwargs=kwargs, serializer='json')
 
-    
     if sections_available and not exists_already:
         status = "success"
 
     elif not sections_available:
         status = "no_sections"
-    
+
     elif exists_already:
         status = "pptx_exists"
 
@@ -109,19 +110,6 @@ async def deliver_pptx(pptx: PPTX):
     }
 
     return JSONResponse(package)
-
-
-def check_existence(sections, db):
-    exists_already = False
-    no_sections = len(sections)
-    query = {"kwargs.sections": {"$size": no_sections, "$all": sections}}
-
-    hits = db.count_documents(query)
-
-    if hits > 0:
-        exists_already = True
-
-    return exists_already
 
 
 @app.post("/v1/download", tags=["powerpoint"])
@@ -136,3 +124,31 @@ async def download_pptx(download: Download):
 
     # return file_path
     return FileResponse(file_path)
+
+
+@app.post("/v1/registerDownload", tags=["powerpoint"], status_code=201)
+async def register_download(task_id: Download):
+    task_id = task_id.taskID
+
+    res = db.update_one({"kwargs.customID": task_id},
+                        {"$set": {"kwargs.downloaded": True}
+                         })
+
+    changed_docs = res.modified_count
+
+    return {'changedDocuments': changed_docs}
+
+
+### UTILS ###
+
+def check_existence(sections, db):
+    exists_already = False
+    no_sections = len(sections)
+    query = {"kwargs.sections": {"$size": no_sections, "$all": sections}}
+
+    hits = db.count_documents(query)
+
+    if hits > 0:
+        exists_already = True
+
+    return exists_already

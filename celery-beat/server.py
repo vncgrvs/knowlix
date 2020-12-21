@@ -1,5 +1,6 @@
 import os
 from celery import Celery
+from celery.schedules import crontab
 
 
 CELERY_BROKER_URL = os.getenv("RABBITMQ")
@@ -13,7 +14,13 @@ app.conf.update(
     enable_utc=False,
     mongodb_backend_settings={
         'database': 'taskdb',
-        'taskmeta_collection': 'ta',
+        'taskmeta_collection': 'crontasks',
     },
-    
+    beat_schedule={
+        "pptx-cleaner": { 
+            "task": "worker.clean_pptx", 
+            "schedule": crontab(minute='*/2')
+        }
+    }
+
 )
