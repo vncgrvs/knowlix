@@ -1,11 +1,12 @@
 <template>
   <div class="w-full h-full sortable bg-gray-100">
     <div class="fixed w-full pt-5">
-      <alertJob
-        v-for="(task, id) in this.$store.state.tasksAlerts"
-        :key="task.id"
+      <alert
+        v-for="(alert, id) in this.$store.state.tasksAlerts"
+        :key="id"
         :pkey="id"
-        :taskname="task"
+        :alertID="alert.alertID"
+        :alertType="alert.alertType"
       />
     </div>
     <Section />
@@ -14,13 +15,13 @@
 
 <script>
 import Section from "../components/Section";
-import alertJob from "../components/alertJob";
+import alert from "../components/alert";
 
 
 export default {
   components: {
     Section,
-    alertJob,
+    alert,
   },
   computed: {},
 
@@ -35,23 +36,35 @@ export default {
   data() {
     return {};
   },
+  
   mounted() {
-    this.ws_success = new WebSocket('ws://localhost:5555/api/task/events/task-succeeded/') // take form env variable
-    this.ws_failure = new WebSocket('ws://localhost:5555/api/task/events/task-failed/') // take form env variable
+    
+    this.ws_success = new WebSocket('ws://localhost:3333/tasks') 
+    
     
     this.ws_success.onmessage = function(event){
       var data = JSON.parse(event.data)
-      var taskID = data.uuid
+      
+      
+      var taskID = data.data.kwargs.customID
+      var status = data.data.status
       var tList = this.$store.state.taskList
       
+
       var index = this.findTask(tList, taskID)
 
-      this.$store.dispatch('updateTask', index)
+      var payload = {
+        index: index,
+        status: status
+      }
+        
+      
+      this.$store.dispatch('updateTask', payload)
       
       
     }.bind(this)
     
-      
+    
     
   },
   async created() {
