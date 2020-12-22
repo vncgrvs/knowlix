@@ -33,15 +33,19 @@ class ChangesHandler(tornado.websocket.WebSocketHandler):
     @classmethod
     def on_change(cls, change):
         print(change)
-        message = {
-            'operation': change['operationType'],
-            'data': change['fullDocument'],
-            'taskID': change['documentKey']['_id']
 
-        }
+        non_fulldocument_events = ['drop', 'delete',
+                                   'rename', 'dropDatabase', 'invalidate']
 
-        # message = f"{change['operationType']}: {change['fullDocument']}"
-        # message = f"{change['operationType']}"
+        if change['operationType'] not in non_fulldocument_events:
+            message = {
+                'operation': change['operationType'],
+                'data': change['fullDocument'],
+                'taskID': change['documentKey']['_id']
+
+            }
+        else:
+            message = change
 
         ChangesHandler.send_updates(message)
 
@@ -89,11 +93,9 @@ if __name__ == "__main__":
             col = tasks["ta"]
             mongo_isLive = True
 
-
         except Exception as e:
             print('error ', e)
             time.sleep(5)
-        
 
     print('MongoDB connected to Websocket!')
 
