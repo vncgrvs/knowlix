@@ -9,6 +9,7 @@ db = client["taskdb"]["ta"]
 
 @app.task()
 def clean_pptx(self):
+    print("fired clean task")
     delete = db.delete_many({"kwargs.downloaded": True})
     deleted_count = delete.deleted_count
 
