@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.9.1-slim-buster
 
 COPY req.txt /req.txt
 RUN pip install -r /req.txt
