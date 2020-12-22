@@ -187,11 +187,7 @@ export const actions = {
         link.click();
         link.remove()
 
-        const downloadSuccess = await this.$axios.$post('/v1/registerDownload',taskID)
-        .then((res)=>{
-          console.log(res)
-
-        })
+        
 
 
       })

@@ -59,10 +59,13 @@ services:
       RABBITMQ: pyamqp://rabbitmq
     networks:
       - mongonetwork
+    entrypoint:
+      - /celery-beat/beat.sh
     depends_on: 
       - mongodb1
       - mongodb2
       - rabbitmq
+      - celery
       
   
   mongo-stream:

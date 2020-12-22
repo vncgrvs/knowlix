@@ -6,4 +6,5 @@ RUN pip install -r /req.txt
 COPY server.py worker.py pptx_handler.py core.py master.pptx /celery/
 WORKDIR /celery/
 RUN mkdir output 
-ENTRYPOINT celery -A worker worker -E --loglevel=info
+
+ENTRYPOINT celery -A worker worker -E --loglevel=info -n celeryworker@%h
