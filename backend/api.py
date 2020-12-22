@@ -73,14 +73,15 @@ async def provide_sections():
 async def deliver_pptx(pptx: PPTX):
     task_name = "pptx"
     sections = pptx.sections
-    no_sections=len(sections)
+    no_sections = len(sections)
     sections_available = True
     exists_already = False
-    status=None
+    status = None
     custom_id = str(uuid.uuid4().hex)
     kwargs = {
         'sections': sections,
-        'customID': custom_id
+        'customID': custom_id,
+        'downloaded': False
 
     }
 
@@ -88,17 +89,16 @@ async def deliver_pptx(pptx: PPTX):
         exists_already = check_existence(sections, db)
     else:
         sections_available = False
-    
+
     if not exists_already and sections_available:
         task = celery.send_task(task_name, kwargs=kwargs, serializer='json')
 
-    
     if sections_available and not exists_already:
         status = "success"
 
     elif not sections_available:
         status = "no_sections"
-    
+
     elif exists_already:
         status = "pptx_exists"
 

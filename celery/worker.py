@@ -17,24 +17,20 @@ db = client["taskdb"]["ta"]
 
 
 @app.task(name='pptx', bind=True, max_retries=3)
-def generate_pptx(self, sections, customID):
+def generate_pptx(self, sections, customID, downloaded):
 
     try:
         pptx_path = "master.pptx"
-        task_id=self.request.id
+        task_id = self.request.id
 
-        pres= Presentation(pptx_path)
-        file_path=create_pptx(pres,sections)
+        pres = Presentation(pptx_path)
+        file_path = create_pptx(pres, sections)
 
-
-    
     except Exception as exec:
-        self.retry(exec=exec, countdown = 2 ** self.request.retries)
+        self.retry(exec=exec, countdown=2 ** self.request.retries)
 
     output = {
-        'filePath':file_path
+        'filePath': file_path
     }
 
-    
     return output
-
