@@ -15,5 +15,10 @@ app.conf.update(
         'database': 'taskdb',
         'taskmeta_collection': 'ta',
     },
+    task_routes={
+        'worker.*':{'queue':'presentations'},
+        
+    },
+    task_default_queue = 'presentations'
     
 )

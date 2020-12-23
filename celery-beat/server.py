@@ -16,6 +16,11 @@ app.conf.update(
         'database': 'crontasks',
         'taskmeta_collection': 'ta',
     },
+    task_routes={
+        'tasks.*':{'queue':'crontasks'},
+        
+    },
+    task_default_queue = 'crontasks'
     
 
 )

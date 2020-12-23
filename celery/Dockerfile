@@ -7,4 +7,4 @@ COPY server.py worker.py pptx_handler.py core.py master.pptx /celery/
 WORKDIR /celery/
 RUN mkdir output 
 
-ENTRYPOINT celery -A worker worker -E --loglevel=info -n celeryworker
+ENTRYPOINT celery -A worker worker -E --loglevel=info -n celeryworker -Q presentations

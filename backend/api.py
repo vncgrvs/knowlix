@@ -71,7 +71,7 @@ async def provide_sections():
 
 
 @app.post("/v1/pptxjob", tags=["job management"])
-async def deliver_pptx(pptx: PPTX):
+async def trigger_pptx_task(pptx: PPTX):
     task_name = "pptx"
     sections = pptx.sections
     no_sections = len(sections)

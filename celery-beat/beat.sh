@@ -1,4 +1,4 @@
 #!/bin/bash
 
-celery -A tasks worker -E --loglevel=info -B -n beatworker
+celery -A tasks worker -E --loglevel=info -B -n beatworker -Q crontasks
 

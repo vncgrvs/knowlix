@@ -11,5 +11,6 @@ celery.conf.update(
    mongodb_backend_settings={
         'database': 'taskdb',
         'taskmeta_collection': 'ta',
-    }
+    },
+    task_default_queue = 'presentations'
 )
