@@ -165,7 +165,7 @@ export const actions = {
 
   },
 
-  async downloadPresentation({ commit }, task) {
+  async downloadPresentation({ commit,dispatch }, task) {
     let taskID = JSON.stringify({ "taskID": task })
     commit('changeDownloadCount');
     var config = {
@@ -177,7 +177,7 @@ export const actions = {
     };
 
     const send = await this.$axios.$post('/v1/download', taskID, config)
-      .then((res,taskID) => {
+      .then((res) => {
 
         const url = window.URL.createObjectURL(new Blob([res]));
         const link = document.createElement('a');
@@ -186,11 +186,26 @@ export const actions = {
         document.body.appendChild(link);
         link.click();
         link.remove()
-
         
+        
+        dispatch("registerDownload",task)
 
 
       })
+
+  },
+
+  async registerDownload({commit}, taskID){
+    let task = JSON.stringify({ "taskID": taskID })
+    var config = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    };
+    
+
+    const send = await this.$axios.$post('/v1/registerDownload',task,config)
+      
 
   }
 }
