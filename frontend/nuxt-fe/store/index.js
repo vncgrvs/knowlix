@@ -125,6 +125,8 @@ export const actions = {
     commit('clearAlertList');
 
   },
+  
+  // API Calls //
   async sendTask({ commit }) {
 
     let onBoardingDeck = JSON.stringify({ "sections": this.state.userChoice })
@@ -137,7 +139,7 @@ export const actions = {
 
     const send = await this.$axios.$post('/v1/pptxjob', onBoardingDeck, config)
       .then((res) => {
-        
+
 
         if (res.status == "success") {
           let alert = { 'alertType': 'jobTriggered', 'alertID': res.taskID }
@@ -152,7 +154,7 @@ export const actions = {
           commit('changeDownloadStatus');
           commit('addTaskAlert', alert);
         }
-        else if(res.status == "pptx_exists"){
+        else if (res.status == "pptx_exists") {
           let alert = { 'alertType': 'pptxExists', 'alertID': "Looks the requested deck already exists under Downloads" }
           commit('changeDownloadStatus');
           commit('addTaskAlert', alert);
@@ -165,7 +167,7 @@ export const actions = {
 
   },
 
-  async downloadPresentation({ commit,dispatch }, task) {
+  async downloadPresentation({ commit, dispatch }, task) {
     let taskID = JSON.stringify({ "taskID": task })
     commit('changeDownloadCount');
     var config = {
@@ -182,30 +184,24 @@ export const actions = {
         const url = window.URL.createObjectURL(new Blob([res]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'Onboarding.pptx'); 
+        link.setAttribute('download', 'Onboarding.pptx');
         document.body.appendChild(link);
         link.click();
         link.remove()
-        
-        
-        dispatch("registerDownload",task)
 
+        dispatch("registerDownload", task)
 
       })
 
   },
 
-  async registerDownload({commit}, taskID){
+  async registerDownload({ commit }, taskID) {
     let task = JSON.stringify({ "taskID": taskID })
     var config = {
       headers: {
         'Content-Type': 'application/json'
       },
     };
-    
-
-    const send = await this.$axios.$post('/v1/registerDownload',task,config)
-      
-
+    const send = await this.$axios.$post('/v1/registerDownload', task, config)
   }
 }
