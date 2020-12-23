@@ -46,7 +46,7 @@ export default {
       var data = JSON.parse(event.data)
 
       var operationType = data.operation
-      console.log(data)
+      
       if(operationType == "insert" || operationType == "replace"){
 
         this.$store.dispatch('getDownloads')
@@ -61,6 +61,7 @@ export default {
   },
   async created() {
     this.$store.dispatch('getSections')
+    this.$store.dispatch('getDownloads')
   },
 };
 </script>

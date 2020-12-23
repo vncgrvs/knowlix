@@ -49,6 +49,9 @@ export const mutations = {
   updateTaskList(state, payload) {
     state.taskList.push(payload)
   },
+  clearTaskList(state){
+    state.taskList =[]
+  },
   deleteTaskAlert(state, payload) {
     state.taskAlerts.splice(payload, 1);
   },
@@ -174,13 +177,21 @@ export const actions = {
   async getDownloads({ commit }) {
     const res = await this.$axios.$get('/v1/getDownloads')
       .then((res) => {
-        console.log('API Response Downloads: ', res)
+        
+        commit('clearTaskList')
         res.forEach(elem => {
-
-          payload = {
+          let options = { 
+            hour: 'numeric',
+            minute: 'numeric',
+            year:'numeric',
+            month:'numeric',
+            day:'numeric'
+         }
+          let payload = {
             'taskID': elem.taskID,
             'status': elem.status,
-            'created': new Date(elem.date_started).toLocaleDateString("en-GB")
+            'sections':elem.sections,
+            'created': new Date(elem.date_started).toLocaleDateString("en-GB",options)
           }
           commit('updateTaskList', payload)
 

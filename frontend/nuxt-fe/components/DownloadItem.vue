@@ -124,21 +124,21 @@
                         v-if="task.status === 'STARTED'"
                         
                       >
-                        {{ task.status }}
+                        started
                       </span>
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
                         v-if="task.status === 'SUCCESS'"
                         
                       >
-                        {{ task.status }}
+                        done
                       </span>
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"
                         v-if="task.status === 'FAILURE'"
                         
                       >
-                        {{ task.status }}
+                        failed
                       </span>
                     </td>
                     <td
@@ -204,7 +204,7 @@ export default {
     // $("th").off();
     $("th").removeAttr("style");
     // $('.dataTables_empty').remove();
-    
+    this.$store.dispatch('getDownloads')
   },
 };
 </script>
