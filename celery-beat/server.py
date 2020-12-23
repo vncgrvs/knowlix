@@ -17,17 +17,17 @@ app.conf.update(
         'taskmeta_collection': 'ta',
     },
     task_routes={
-        'tasks.*':{'queue':'crontasks'},
-        
+        'tasks.*': {'queue': 'crontasks'},
+
     },
-    task_default_queue = 'crontasks'
-    
+    task_default_queue='crontasks'
+
 
 )
 
-app.conf.beat_schedule={
-        "pptx-cleaner": { 
-            "task": "clean_pptx", 
-            "schedule": crontab(minute='*/2')
-        }
+app.conf.beat_schedule = {
+    "pptx-cleaner": {
+        "task": "clean_pptx",
+        "schedule": crontab(hour='*/1', minute="0")
     }
+}

@@ -5,7 +5,7 @@ export const state = () => ({
   isFetchingPptx: false,
   isDownloads: false,
   currentRoute: null,
-  tasksAlerts: [],
+  taskAlerts: [],
   taskList: [],
 
 
@@ -50,49 +50,22 @@ export const mutations = {
     state.currentRoute = payload
   },
   addTaskAlert(state, payload) {
-    state.tasksAlerts.push(payload)
+    state.taskAlerts.push(payload)
   },
-  updateTask(state, payload) {
-    let status = payload.status
-    let index = payload.index
-
-    if (status == "SUCCESS") {
-      state.taskList[index].status = "done"
-    }
-    else if (status == "FAILURE") {
-      state.taskList[index].status = "failed"
-    }
-    else if (status == "RETRY") {
-      state.taskList[index].status = "retry"
-    }
+  updateTaskList(state, payload) {
+    state.taskList.push(payload)
   },
   deleteTaskAlert(state, payload) {
-    state.tasksAlerts.splice(payload, 1);
+    state.taskAlerts.splice(payload, 1);
   },
   clearAlertList(state) {
-    this.state.tasksAlerts = []
+    this.state.taskAlerts = []
   },
   updateLocalStorage(state) {
     let taskList = state.taskList
     localStorage.setItem('taskList', JSON.stringify(taskList))
   },
-  addTask(state, payload) {
-    var date = new Date()
-
-    var container = {
-      'taskID': payload.taskID,
-      'sections': payload.sections,
-      'status': 'started',
-      'created': date.toLocaleDateString('en-GB', {
-        timeZone: 'Europe/Brussels',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: false
-      })
-    };
-    state.taskList.push(container);
-
-  },
+  
 
 
 }
@@ -113,10 +86,7 @@ export const actions = {
   deleteUserChoice({ commit }, payload) {
     commit('deleteUserChoice', payload);
   },
-  updateTask({ commit }, payload) {
-    commit('updateTask', payload)
-    commit('updateLocalStorage');
-  },
+
   deleteListItem({ commit }, payload) {
     commit('deleteListItem', payload);
   },
@@ -125,7 +95,7 @@ export const actions = {
     commit('clearAlertList');
 
   },
-  
+
   // API Calls //
   async sendTask({ commit }) {
 
@@ -146,7 +116,7 @@ export const actions = {
           commit('changeDownloadStatus');
           commit('addTaskAlert', alert);
 
-          commit('addTask', res)
+          
           commit('updateLocalStorage');
         }
         else if (res.status == "no_sections") {
@@ -203,5 +173,32 @@ export const actions = {
       },
     };
     const send = await this.$axios.$post('/v1/registerDownload', task, config)
+  },
+
+  async getSections({ commit }) {
+    const res = await this.$axios.$get("/v1/sections")
+      .then((res) => {
+        commit("updateList", res.data);
+      });
+  },
+
+  async getDownloads({ commit }) {
+    const res = await this.$axios.$get('/v1/getDownloads')
+      .then((res) => {
+        console.log('API Response Downloads: ', res)
+        res.forEach(elem => {
+
+          payload = {
+            'taskID': elem.taskID,
+            'status': elem.status,
+            'created': new Date(elem.date_started).toLocaleDateString("en-GB")
+          }
+          commit('updateTaskList', payload)
+
+
+        })
+
+      })
+
   }
 }

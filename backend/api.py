@@ -1,11 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+import pymongo
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List
 from main import create_pptx, get_sections
 import os
+from datetime import datetime
 from pptx import Presentation
 from server import celery
 import json
@@ -13,7 +15,7 @@ import uuid
 from datetime import datetime
 from pymongo import MongoClient
 
-
+## CONFIG ##
 file_path = "master.pptx"
 pres = Presentation(file_path)
 MONGODB = os.getenv("MONGODB")
@@ -79,10 +81,13 @@ async def trigger_pptx_task(pptx: PPTX):
     exists_already = False
     status = None
     custom_id = str(uuid.uuid4().hex)
+    timestamp = datetime.now().isoformat()
+
     kwargs = {
         'sections': sections,
         'customID': custom_id,
-        'downloaded': False
+        'downloaded': False,
+        'date_started': timestamp
 
     }
 
@@ -137,6 +142,29 @@ async def register_download(task_id: Download):
     changed_docs = res.modified_count
 
     return {'changedDocuments': changed_docs}
+
+
+@app.get("/v1/getDownloads", tags=["powerpoint"])
+async def getDownloads():
+    res = db.find({}).sort(
+        [("kwargs.date_started", pymongo.DESCENDING)]).limit(10)
+    results = list()
+
+    for item in res:
+        taskID = item["kwargs"]["customID"]
+        date_started = item["kwargs"]["date_started"]
+        status = item["status"]
+        sections = item["kwargs"]["sections"]
+
+        package = {
+            'taskID': taskID,
+            'date_started': date_started,
+            'status': status,
+            'sections': sections
+        }
+        results.append(package)
+
+    return JSONResponse(results, status_code=200)
 
 
 ### UTILS ###

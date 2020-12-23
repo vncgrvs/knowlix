@@ -121,21 +121,21 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-200 text-gray-800"
-                        v-if="task.status === 'started'"
+                        v-if="task.status === 'STARTED'"
                         
                       >
                         {{ task.status }}
                       </span>
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
-                        v-if="task.status === 'done'"
+                        v-if="task.status === 'SUCCESS'"
                         
                       >
                         {{ task.status }}
                       </span>
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"
-                        v-if="task.status === 'failed'"
+                        v-if="task.status === 'FAILURE'"
                         
                       >
                         {{ task.status }}

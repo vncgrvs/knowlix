@@ -2,7 +2,7 @@
   <div class="w-full h-full sortable bg-gray-100">
     <div class="fixed w-full pt-5">
       <alert
-        v-for="(alert, id) in this.$store.state.tasksAlerts"
+        v-for="(alert, id) in this.$store.state.taskAlerts"
         :key="id"
         :pkey="id"
         :alertID="alert.alertID"
@@ -44,23 +44,15 @@ export default {
     
     this.ws_success.onmessage = function(event){
       var data = JSON.parse(event.data)
-      
-      
-      var taskID = data.data.kwargs.customID
-      var status = data.data.status
-      var tList = this.$store.state.taskList
-      
 
-      var index = this.findTask(tList, taskID)
+      var operationType = data.operation
+      console.log(data)
+      if(operationType == "insert" || operationType == "replace"){
 
-      var payload = {
-        index: index,
-        status: status
+        this.$store.dispatch('getDownloads')
+
       }
-        
-      
-      this.$store.dispatch('updateTask', payload)
-      
+
       
     }.bind(this)
     
@@ -68,9 +60,7 @@ export default {
     
   },
   async created() {
-    const res = await this.$axios.$get("/v1/sections").then((response) => {
-      this.$store.commit("updateList", response.data);
-    });
+    this.$store.dispatch('getSections')
   },
 };
 </script>
