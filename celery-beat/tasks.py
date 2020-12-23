@@ -5,7 +5,7 @@ import os
 
 MONGODB = os.getenv("MONGODB")
 client = MongoClient(MONGODB)
-db = client["tasksdb"]["ta"]
+db = client["taskdb"]["ta"]
 
 
 @app.task(name="clean_pptx", bind=True)
