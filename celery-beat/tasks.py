@@ -2,6 +2,7 @@ from celery import Celery
 from server import app
 from pymongo import MongoClient
 import os
+import json
 
 MONGODB = os.getenv("MONGODB")
 client = MongoClient(MONGODB)
