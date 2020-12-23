@@ -19,6 +19,7 @@ app.conf.update(
         'worker.*':{'queue':'presentations'},
         
     },
-    task_default_queue = 'presentations'
+    task_default_queue = 'presentations',
+    task_track_started = True
     
 )

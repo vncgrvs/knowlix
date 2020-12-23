@@ -12,6 +12,7 @@ db = client["crontasks"]["ta"]
 def clean_pptx(self):
     # print("fired clean task", self.request.id)
 
+
     # delete = db.delete_many({"kwargs.downloaded": True})
     # deleted_count = delete.deleted_count
 

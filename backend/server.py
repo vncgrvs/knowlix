@@ -12,5 +12,6 @@ celery.conf.update(
         'database': 'taskdb',
         'taskmeta_collection': 'ta',
     },
-    task_default_queue = 'presentations'
+    task_default_queue = 'presentations',
+    task_track_started = True
 )
