@@ -11,22 +11,33 @@ db = client["taskdb"]["ta"]
 
 @app.task(name="clean_pptx", bind=True)
 def clean_pptx(self):
-    delete_items = list()
-    db_delete_list = db.find({"kwargs.downloaded":True})
+    deleted_filepath = list()
+    deleted_taskid = list()
+    db_delete_list = db.find({"kwargs.downloaded": True})
 
     for item in db_delete_list:
-        raw=item["result"]
-        filepath=parse_filepath(raw)
-        delete_items.append(filepath)
+        raw_filepath = item["result"]
+        taskID = item["kwargs"]["customID"]
+        filepath = parse_filepath(raw_filepath)
+        os.remove(filepath)
 
-    # delete = db.delete_many({"kwargs.downloaded": True})
-    # deleted_count = delete.deleted_count
+        deleted_filepath.append(filepath)
+        deleted_taskid.append(taskID)
 
-    return delete_items
+    delete = db.delete_many({"kwargs.customID": {"$in": deleted_taskid}})
+    deleted_count = delete.deleted_count
+
+    package = {
+        'tasks': deleted_taskid,
+        'filePaths': deleted_filepath,
+        'deleted_count': deleted_count
+    }
+
+    return package
 
 
 def parse_filepath(item):
     json_item = json.loads(item)
     filepath = json_item["filePath"]
-    
+
     return filepath
