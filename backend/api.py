@@ -92,7 +92,7 @@ async def trigger_pptx_task(pptx: PPTX):
         sections_available = False
 
     if not exists_already and sections_available:
-        task = celery.send_task(task_name, kwargs=kwargs, serializer='json', track_started = True)
+        task = celery.send_task(task_name, kwargs=kwargs, serializer='json')
 
     if sections_available and not exists_already:
         status = "success"
