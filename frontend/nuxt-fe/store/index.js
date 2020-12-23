@@ -12,13 +12,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-  initialiseStore(state) {
-
-    if (localStorage.getItem('taskList')) {
-      state.taskList = JSON.parse(localStorage.getItem('taskList'))
-    }
-
-  },
+  
   updateList(state, payload) {
     state.list = payload
   },
@@ -61,11 +55,8 @@ export const mutations = {
   clearAlertList(state) {
     this.state.taskAlerts = []
   },
-  updateLocalStorage(state) {
-    let taskList = state.taskList
-    localStorage.setItem('taskList', JSON.stringify(taskList))
-  },
   
+
 
 
 }
@@ -116,8 +107,6 @@ export const actions = {
           commit('changeDownloadStatus');
           commit('addTaskAlert', alert);
 
-          
-          commit('updateLocalStorage');
         }
         else if (res.status == "no_sections") {
           let alert = { 'alertType': 'noSections', 'alertID': "Please select sections" }

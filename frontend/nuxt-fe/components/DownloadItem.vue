@@ -186,9 +186,7 @@ export default {
     }
   },
   created() {
-    if(process.browser){
-      this.$store.commit('initialiseStore');
-    }
+    
     
   },
   mounted() {
