@@ -18,7 +18,7 @@ agent_conf_file="/etc/amplify-agent/agent.conf"
 agent_log_file="/var/log/amplify-agent/agent.log"
 nginx_status_conf="/etc/nginx/conf.d/default.conf"
 api_key="ec35599c5189ed42cfcf2a8ebbf2b5ea"
-amplify_imagename="pptx-builder"
+amplify_imagename="knowlix"
 
 # Launch nginx
 echo "starting nginx ..."
