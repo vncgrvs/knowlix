@@ -27,3 +27,15 @@ rs.stepDown()
 EOF
 
 echo "set mongodb2 as primary"
+
+
+sleep 10 
+
+mongo --host mongodb2 <<EOF
+cfg = rs.conf()
+cfg.members[0].priority = 0
+cfg.members[1].priority = 1
+rs.reconfig(cfg)
+EOF
+
+echo "changed voting rights to favour mongodb2"

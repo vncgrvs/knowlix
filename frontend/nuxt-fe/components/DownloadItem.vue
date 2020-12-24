@@ -151,7 +151,7 @@
                     >
                       <a
                         class="text-indigo-600 hover:text-indigo-900 cursor-pointer"
-                        v-if="task.status === 'done'"
+                        v-if="task.status === 'SUCCESS'"
                         @click="getDownload(task.taskID)"
                         >Download</a
                       >
