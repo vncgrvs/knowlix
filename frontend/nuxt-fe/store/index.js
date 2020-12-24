@@ -58,6 +58,17 @@ export const mutations = {
   clearAlertList(state) {
     this.state.taskAlerts = []
   },
+  updateLocalStorage(state){
+    let taskList = state.taskList
+    localStorage.setItem('taskList', JSON.stringify(taskList))
+  },
+  initialiseStore(state) {
+
+    if (localStorage.getItem('taskList')) {
+      state.taskList = JSON.parse(localStorage.getItem('taskList'))
+    }
+
+  }
   
 
 
@@ -194,6 +205,7 @@ export const actions = {
             'created': new Date(elem.date_started).toLocaleDateString("en-GB",options)
           }
           commit('updateTaskList', payload)
+          commit('updateLocalStorage')
 
 
         })

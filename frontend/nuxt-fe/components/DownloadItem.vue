@@ -100,12 +100,15 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="(task, index) in this.$store.state.taskList" :key="index">
+                  <tr
+                    v-for="(task, index) in this.$store.state.taskList"
+                    :key="index"
+                  >
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center justify-center">
                         <div class="">
                           <div class="text-lg font-bold text-gray-900">
-                            {{ index + 1}}
+                            {{ index + 1 }}
                           </div>
                         </div>
                       </div>
@@ -122,21 +125,18 @@
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-200 text-gray-800"
                         v-if="task.status === 'STARTED'"
-                        
                       >
                         started
                       </span>
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
                         v-if="task.status === 'SUCCESS'"
-                        
                       >
                         done
                       </span>
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"
                         v-if="task.status === 'FAILURE'"
-                        
                       >
                         failed
                       </span>
@@ -149,11 +149,10 @@
                     <td
                       class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
                     >
-                      <a 
-                      class="text-indigo-600 hover:text-indigo-900 cursor-pointer"
-                      v-if="task.status === 'done'"
-                      @click="getDownload(task.taskID)"
-                      
+                      <a
+                        class="text-indigo-600 hover:text-indigo-900 cursor-pointer"
+                        v-if="task.status === 'done'"
+                        @click="getDownload(task.taskID)"
                         >Download</a
                       >
                     </td>
@@ -180,31 +179,42 @@ export default {
 
       table.order.listener("#update", id);
     },
-    getDownload: function(taskID){
+    getDownload: function (taskID) {
       // console.log(taskID)
-      this.$store.dispatch("downloadPresentation",taskID)
-    }
+      this.$store.dispatch("downloadPresentation", taskID);
+      
+    },
+    
   },
   created() {
-    
-    
+    if(process.browser){
+      this.$store.commit('initialiseStore');
+    }
   },
   mounted() {
-    
+
     var table = $("#downloads").DataTable({
-      responsive: false,
-      paging: false,
-      info: false,
-      searching: false,
-      keys: false,
-    });
+      "responsive": false,
+      "paging": false,
+      "info": false,
+      "searching": false,
+      "keys": false,
+      
+    })
 
+    
     this.table = table;
-
+    
+    
+    
+    
+    
     // $("th").off();
     $("th").removeAttr("style");
+    
+    
+
     // $('.dataTables_empty').remove();
-    this.$store.dispatch('getDownloads')
   },
 };
 </script>
