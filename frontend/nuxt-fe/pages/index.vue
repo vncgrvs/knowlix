@@ -47,6 +47,7 @@ export default {
 
       var operationType = data.operation
       
+      
       if(operationType == "insert" || operationType == "replace" || operationType == "delete"){
 
         this.$store.dispatch('getDownloads')

@@ -9,10 +9,20 @@ export const state = () => ({
   taskList: [],
 
 
+
 })
 
 export const mutations = {
-  
+  turnDownloadOn(state, taskID) {
+    var taskList = state.taskList
+    var foundIndex = taskList.findIndex(x => x.taskID == taskID)
+    taskList[foundIndex]["downloading"] = true
+  },
+  turnDownloadOff(state, taskID) {
+    var taskList = state.taskList
+    var foundIndex = taskList.findIndex(x => x.taskID == taskID)
+    taskList[foundIndex]["downloading"] = false
+  },
   updateList(state, payload) {
     state.list = payload
   },
@@ -49,8 +59,8 @@ export const mutations = {
   updateTaskList(state, payload) {
     state.taskList.push(payload)
   },
-  clearTaskList(state){
-    state.taskList =[]
+  clearTaskList(state) {
+    state.taskList = []
   },
   deleteTaskAlert(state, payload) {
     state.taskAlerts.splice(payload, 1);
@@ -58,7 +68,7 @@ export const mutations = {
   clearAlertList(state) {
     this.state.taskAlerts = []
   },
-  updateLocalStorage(state){
+  updateLocalStorage(state) {
     let taskList = state.taskList
     localStorage.setItem('taskList', JSON.stringify(taskList))
   },
@@ -69,7 +79,7 @@ export const mutations = {
     }
 
   }
-  
+
 
 
 
@@ -143,6 +153,7 @@ export const actions = {
   async downloadPresentation({ commit, dispatch }, task) {
     let taskID = JSON.stringify({ "taskID": task })
     commit('changeDownloadCount');
+    commit('turnDownloadOn', task);
     var config = {
       responseType: 'blob',
       headers: {
@@ -163,9 +174,12 @@ export const actions = {
         link.remove()
 
         dispatch("registerDownload", task)
+        commit('turnDownloadOff',task)
+
 
       })
 
+    
   },
 
   async registerDownload({ commit }, taskID) {
@@ -188,21 +202,22 @@ export const actions = {
   async getDownloads({ commit }) {
     const res = await this.$axios.$get('/v1/getDownloads')
       .then((res) => {
-        
+
         commit('clearTaskList')
         res.forEach(elem => {
-          let options = { 
+          let options = {
             hour: 'numeric',
             minute: 'numeric',
-            year:'numeric',
-            month:'numeric',
-            day:'numeric'
-         }
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+          }
           let payload = {
             'taskID': elem.taskID,
             'status': elem.status,
-            'sections':elem.sections,
-            'created': new Date(elem.date_started).toLocaleDateString("en-GB",options)
+            'sections': elem.sections,
+            'created': new Date(elem.date_started).toLocaleDateString("en-GB", options),
+            'downloading': false
           }
           commit('updateTaskList', payload)
           commit('updateLocalStorage')

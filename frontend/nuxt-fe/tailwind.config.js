@@ -10,17 +10,23 @@ module.exports = {
     borderColor: theme => ({
       ...theme('colors'),
       'lix-main': '#166BFF',
-      'lix-second':'#222F4B',
-      'lix-third':'#4D5C7D'
-     }),
+      'lix-second': '#222F4B',
+      'lix-third': '#4D5C7D'
+    }),
 
     backgroundColor: theme => ({
       ...theme('colors'),
       'lix-main': '#166BFF',
-      'lix-second':'#222F4B',
-      'lix-third':'#4D5C7D'
+      'lix-second': '#222F4B',
+      'lix-third': '#4D5C7D'
+
+    }),
+
+    textColor: theme =>({
+      ...theme('colors'),
+      'lix': '#166BFF',
       
-            }),
+    }),
 
     extend: {
       fontFamily: {

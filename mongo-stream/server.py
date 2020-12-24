@@ -46,7 +46,7 @@ class ChangesHandler(tornado.websocket.WebSocketHandler):
             }
         else:
             message = {
-                'operartion':change['operationType']
+                'operation':change['operationType']
             }
 
         ChangesHandler.send_updates(message)
