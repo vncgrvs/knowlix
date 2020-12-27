@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import pymongo
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -12,8 +13,9 @@ from pptx import Presentation
 from server import celery
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from pymongo import MongoClient
+import api_utils as utils
 
 ## CONFIG ##
 file_path = "master.pptx"
@@ -30,6 +32,10 @@ tags_metadata = [
     {
         "name": "job management",
         "description": "managing celery tasks"
+    },
+    {
+        "name": "auth",
+        "description": "authentication workflow endpoint"
     },
 
 ]
@@ -55,11 +61,28 @@ class PPTX(BaseModel):
     sections: List[str]
 
 
+class User(BaseModel):
+    email: str
+    password: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class Download(BaseModel):
     taskID: str
 
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 ## API ENDPOINTS ##
+
+
 @app.get("/v1/sections", tags=["powerpoint"])
 async def provide_sections():
 
@@ -92,7 +115,7 @@ async def trigger_pptx_task(pptx: PPTX):
     }
 
     if no_sections != 0:
-        exists_already = check_existence(sections, db)
+        exists_already = utils.check_existence(sections, db)
     else:
         sections_available = False
 
@@ -167,16 +190,29 @@ async def getDownloads():
     return JSONResponse(results, status_code=200)
 
 
-### UTILS ###
+### AUTH ###
+@app.post("/token", response_model=Token)
+async def provide_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(
+        fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
-def check_existence(sections, db):
-    exists_already = False
-    no_sections = len(sections)
-    query = {"kwargs.sections": {"$size": no_sections, "$all": sections}}
 
-    hits = db.count_documents(query)
+@app.post("/register", tags=["auth"])
+async def register_user(user: User):
+    username=user.email
+    password=user.password
 
-    if hits > 0:
-        exists_already = True
+    utils.create_user(username = username, password = password)
 
-    return exists_already
+
