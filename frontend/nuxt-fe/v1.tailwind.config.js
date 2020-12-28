@@ -1,12 +1,11 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
-  purge: [
-    './components/**/*.{vue,js}',
-     './layouts/**/*.vue',
-     './pages/**/*.vue',
-     './plugins/**/*.{js,ts}',
-     './nuxt.config.{js,ts}',
-  ],
-  darkMode: false, // or 'media' or 'class'
+  future: {
+    // removeDeprecatedGapUtilities: true,
+    // purgeLayersByDefault: true,
+  },
+  purge: [],
   theme: {
     borderColor: theme => ({
       ...theme('colors'),
@@ -36,8 +35,6 @@ module.exports = {
       }
     }
   },
-  variants: {
-    extend: {},
-  },
+  variants: {},
   plugins: [],
 }

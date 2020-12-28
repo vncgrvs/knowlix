@@ -58,7 +58,7 @@
       <p
         class="text-3xl text-gray-100 antialiased font-bold pt-1 flex justify-center w-5/12"
       >
-        Onboarding PPTX Generator
+        
       </p>
 
       <div class="flex w-2/12 justify-center items-center py-3">

@@ -7,7 +7,7 @@
       >
         Available Sections
       </p>
-      <div class="px-4 w-full h-full z-10 bg-gray-200 pt-3 pb-3">
+      <div class="px-4 w-full h-full z-10 bg-gray-300 pt-3 pb-3">
         <draggable class=" " v-model="sections" group="sections">
           <div
             v-for="(section, index) in sections"
@@ -57,7 +57,7 @@
       >
         Your Onboarding Deck
       </p>
-      <div class="px-4 w-full h-full z-10 bg-gray-200 pt-3 pb-3">
+      <div class="px-4 w-full h-full z-10 bg-gray-300 pt-3 pb-3">
         <draggable
           class=""
           v-model="userChoice"

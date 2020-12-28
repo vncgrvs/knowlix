@@ -63,6 +63,7 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/axios',
+    '@nuxtjs/tailwindcss'
     
     
   ],
