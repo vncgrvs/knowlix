@@ -78,8 +78,12 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def get_user(username: str, db=users):
-    user = db.find_one({"username": username})
+def get_user(username: str, include_pw=True, db=users):
+
+    if include_pw:
+        user = db.find_one({"username": username}, {"_id": 0})
+    else:
+        user = db.find_one({"username": username}, {"_id": 0, "password": 0})
 
     return user
 
@@ -104,3 +108,24 @@ async def is_token_valid(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
         return False
+
+
+async def get_current_tokenuser(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Credentials are invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY,
+                             algorithms=[config.ALGORITHM])
+
+        username: str = payload.get("sub")
+        user = get_user(username=username, include_pw=False)
+
+        if user is None:
+            raise credentials_exception
+        return user
+
+    except JWTError:
+        raise credentials_exception

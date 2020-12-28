@@ -1,3 +1,4 @@
+import config
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -66,7 +67,6 @@ class User(BaseModel):
     password: str
     first_name: str
     last_name: str
-    
 
 
 class TokenData(BaseModel):
@@ -194,7 +194,7 @@ async def getDownloads(token: bool = Depends(utils.is_token_valid)):
 
 
 ### AUTH ###
-import config
+
 
 @app.post("/v1/token", response_model=Token, tags=["auth"])
 async def create_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -206,9 +206,13 @@ async def create_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    data = {"sub": user["username"],
+            "role": user["role"],
+            "first_name": user["first_name"]}
+    access_token_expires = timedelta(
+        minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = utils.create_access_token(
-        data={"sub": user["username"]}, expires_delta=access_token_expires
+        data=data, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -221,8 +225,11 @@ async def register_user(user: User):
     last_name = user.last_name
     role = "VIEWER"
 
-
     res = utils.create_user(username=username, password=password)
 
     return JSONResponse(res)
 
+
+@app.get("/v1/me", tags=["auth"])
+async def read_users(current_user: User = Depends(utils.get_current_tokenuser)):
+    return current_user
