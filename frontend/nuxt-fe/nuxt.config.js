@@ -51,6 +51,7 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
+    { src: "~/plugins/vuelidate.js", mode: "client" },
     
   ],
 
@@ -68,10 +69,47 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
-  
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: false,
+      callback: false,
+      home: '/'
+    },
+    strategies: {
+      local: {
+        
+        token: {
+          property: 'access_token',
+          maxAge: 60 * 30 ,
+          // type: 'Bearer'
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          data: 'refresh_token',
+          maxAge: 60 * 30 
+        },
+        user: {
+          property: 'first_name',
+          autoFetch: true
+        },
+        endpoints: {
+          login: { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, url: '/v1/token', method: 'post' },
+          user: { url: '/v1/me', method: 'get' },
+          logout: false
+          // refresh: { url: '/api/auth/refresh', method: 'post' },
+          
+        },
+        // autoLogout: false
+      }
+    }
+    
+  },
+
   axios: {
     baseURL: 'http://localhost',
     // browserBaseURL: 'http://localhost/8000'
@@ -81,7 +119,6 @@ export default {
 
  
 
-// TODO: change api
 
 
   

@@ -7,12 +7,26 @@ export const state = () => ({
   currentRoute: null,
   taskAlerts: [],
   taskList: [],
+  routeNow:null
 
 
 
 })
+export const getters = {
+  isAuthenticated(state) {
+    return state.auth.loggedIn
+  },
+
+  loggedInUser(state) {
+    return state.auth.user
+  }
+}
 
 export const mutations = {
+  testUpdate(state,route){
+    state.routeNow = route
+
+  },
   turnDownloadOn(state, taskID) {
     var taskList = state.taskList
     var foundIndex = taskList.findIndex(x => x.taskID == taskID)
@@ -227,5 +241,13 @@ export const actions = {
 
       })
 
+  },
+
+  async getUserInfo({commit}){
+    const res = this.$axios.$get("/v1/me")
+    .then((res)=>{
+      // console.log(res.first_name)
+      this.$auth.setUser(res.first_name)
+    })
   }
 }

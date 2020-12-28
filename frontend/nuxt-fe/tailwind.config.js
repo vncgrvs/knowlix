@@ -25,6 +25,7 @@ module.exports = {
     textColor: theme =>({
       ...theme('colors'),
       'lix': '#166BFF',
+      'lix-second': '#222F4B'
       
     }),
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AppHeader />
+    <AppHeader v-if="this.$store.state.currentRoute != 'login'" />
     <Nuxt />
   </div>
 </template>

@@ -1,4 +1,4 @@
-<template>
+<template >
   <header class="font-lix">
     <nav
       class="bg-lix-main flex items-center flex-wrap justify-around p-6 shadow-lg"
@@ -146,7 +146,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit("changeCurrentRoute", this.$router.currentRoute.name);
+    
   },
   watch: {
     $route(to, from) {
