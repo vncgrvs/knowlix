@@ -20,6 +20,7 @@ pycparser==2.20
 pydantic==1.7.3
 pymongo==3.11.2
 python-jose==3.2.0
+python-multipart==0.0.5
 python-pptx==0.6.18
 pytz==2020.5
 rsa==4.6

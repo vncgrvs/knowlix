@@ -1,11 +1,11 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import pymongo
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from main import create_pptx, get_sections
 import os
 from datetime import datetime
@@ -62,8 +62,11 @@ class PPTX(BaseModel):
 
 
 class User(BaseModel):
-    email: str
+    username: str
     password: str
+    first_name: str
+    last_name: str
+    
 
 
 class TokenData(BaseModel):
@@ -79,12 +82,12 @@ class Download(BaseModel):
     taskID: str
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/token")
 ## API ENDPOINTS ##
 
 
 @app.get("/v1/sections", tags=["powerpoint"])
-async def provide_sections():
+async def provide_sections(token: bool = Depends(utils.is_token_valid)):
 
     sections = get_sections(pres)
 
@@ -96,7 +99,7 @@ async def provide_sections():
 
 
 @app.post("/v1/pptxjob", tags=["job management"])
-async def trigger_pptx_task(pptx: PPTX):
+async def trigger_pptx_task(pptx: PPTX, token: bool = Depends(utils.is_token_valid)):
     task_name = "pptx"
     sections = pptx.sections
     no_sections = len(sections)
@@ -141,7 +144,7 @@ async def trigger_pptx_task(pptx: PPTX):
 
 
 @app.post("/v1/download", tags=["powerpoint"])
-async def download_pptx(download: Download):
+async def download_pptx(download: Download, token: bool = Depends(utils.is_token_valid)):
 
     task_id = download.taskID
 
@@ -155,7 +158,7 @@ async def download_pptx(download: Download):
 
 
 @app.post("/v1/registerDownload", tags=["powerpoint"], status_code=201)
-async def register_download(task_id: Download):
+async def register_download(task_id: Download, token: bool = Depends(utils.is_token_valid)):
     task_id = task_id.taskID
 
     res = db.update_one({"kwargs.customID": task_id},
@@ -168,7 +171,7 @@ async def register_download(task_id: Download):
 
 
 @app.get("/v1/getDownloads", tags=["powerpoint"])
-async def getDownloads():
+async def getDownloads(token: bool = Depends(utils.is_token_valid)):
     res = db.find({}).sort(
         [("kwargs.date_started", pymongo.DESCENDING)]).limit(10)
     results = list()
@@ -191,28 +194,35 @@ async def getDownloads():
 
 
 ### AUTH ###
-@app.post("/token", response_model=Token)
-async def provide_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(
-        fake_users_db, form_data.username, form_data.password)
+import config
+
+@app.post("/v1/token", response_model=Token, tags=["auth"])
+async def create_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = utils.authenticate_user(username=form_data.username,
+                                   password=form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+    access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = utils.create_access_token(
+        data={"sub": user["username"]}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.post("/register", tags=["auth"])
+@app.post("/v1/register", tags=["auth"])
 async def register_user(user: User):
-    username=user.email
-    password=user.password
+    username = user.username
+    password = user.password
+    first_name = user.first_name
+    last_name = user.last_name
+    role = "VIEWER"
 
-    utils.create_user(username = username, password = password)
 
+    res = utils.create_user(username=username, password=password)
+
+    return JSONResponse(res)
 

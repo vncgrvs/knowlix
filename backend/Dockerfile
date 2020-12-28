@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 
 COPY req.txt ./
-COPY api.py core.py main.py master.pptx req.txt server.py ./
+COPY api.py core.py main.py master.pptx req.txt server.py api_utils.py config.py ./
 
 RUN mkdir output  
 
