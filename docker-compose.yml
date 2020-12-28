@@ -14,7 +14,7 @@ services:
       - mongodb2
     volumes: 
       - ./frontend/nuxt-fe:/app
-      - ./frontend/nuxt-fe/node_modules
+      
     command: npm run dev
     networks:
       - mongonetwork
@@ -148,6 +148,12 @@ services:
       - type: bind
         source: ./backend/master.pptx
         target: /usr/app/master.pptx
+      - type: bind
+        source: ./backend/config.py
+        target: /usr/app/config.py
+      - type: bind
+        source: ./backend/api_utils.py
+        target: /usr/app/api_utils.py
 
     command: uvicorn --host=0.0.0.0 --port=8000 api:app --reload
     ports:
