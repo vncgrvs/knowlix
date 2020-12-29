@@ -1,76 +1,55 @@
 <template  >
-  <div>
-    <!-- task initiation Alert -->
-    <div v-if="showAlert && alertType == 'jobTriggered'">
-      <div class="w-full flex justify-end">
-        <div class="w-1/4 relative">
-          <div
-            class="mr-5 text-white px-6 py-4 border-0 rounded mb-4 bg-teal-500 flex items-center"
-          >
-            <span class="inline-block align-middle mr-8 w-11/12">
-              Task {{ alertID }} was triggered successfully
-            </span>
-            <button
-              class="focus:outline-none text-2xl inline-block font-bold"
-              @click="hideAlert(pkey)"
-            >
-              <span>×</span>
-            </button>
-          </div>
-        </div>
+  <div class=" ">
+    <!-- info / green -->
+    <div v-if="showAlert">
+      <div
+        v-if="alertColor == 'green'"
+        class="mr-5 text-white py-4 pl-2 pr-0 border-0 rounded mb-4 bg-green-700 flex items-center"
+      >
+        <span class="inline-block text-center font-bold w-2/12"
+          >{{ alertType }}
+        </span>
+        <span class="inline-block text-left w-9/12 mr-5 pl-4">
+          {{ alertID }}
+        </span>
+
+        <button
+          class="focus:outline-none text-2xl inline-block font-bold w-1/12"
+          @click="hideAlert(pkey)"
+        >
+          <span>×</span>
+        </button>
       </div>
     </div>
 
-    <!-- No section selected Alert -->
-    <div v-if="showAlert && alertType == 'noSections'">
-      <div class="w-full flex justify-end">
-        <div class="w-1/4 relative">
-          <div
-            class="mr-5 text-white px-6 py-4 border-0 rounded mb-4 bg-red-500 flex items-center"
-          >
-            <span class="inline-block align-middle mr-8 w-11/12">
-              {{ alertID }}
-            </span>
-            <button
-              class="focus:outline-none text-2xl inline-block font-bold"
-              @click="hideAlert(pkey)"
-            >
-              <span>×</span>
-            </button>
-          </div>
-        </div>
+    <!-- error / red -->
+    <div v-if="showAlert">
+      <div
+        v-if="alertColor == 'red'"
+        class="mr-5 text-white py-4 pl-2 pr-0 border-0 rounded mb-4 bg-red-500 flex items-center"
+      >
+        <span class="inline-block text-center font-bold w-2/12"
+          >{{ alertType }}
+        </span>
+        <span class="inline-block text-left w-9/12 mr-5 pl-4">
+          {{ alertID }}
+        </span>
+
+        <button
+          class="focus:outline-none text-2xl inline-block font-bold w-1/12"
+          @click="hideAlert(pkey)"
+        >
+          <span>×</span>
+        </button>
       </div>
     </div>
-
-    <!-- pptx already exists  Alert -->
-    <div v-if="showAlert && alertType == 'pptxExists'">
-      <div class="w-full flex justify-end">
-        <div class="w-1/4 relative">
-          <div
-            class="mr-5 text-white px-6 py-4 border-0 rounded mb-4 bg-red-500 flex items-center"
-          >
-            <span class="inline-block align-middle mr-8 w-11/12">
-              {{ alertID }}
-            </span>
-            <button
-              class="focus:outline-none text-2xl inline-block font-bold"
-              @click="hideAlert(pkey)"
-            >
-              <span>×</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
   </div>
 </template>
 
 <script>
 export default {
   name: "alert",
-  props: ["pkey", "alertID", "alertType"],
+  props: ["pkey", "alertID", "alertType", "alertColor"],
   data() {
     return {
       showAlert: true,

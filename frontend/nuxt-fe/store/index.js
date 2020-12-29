@@ -7,7 +7,7 @@ export const state = () => ({
   currentRoute: null,
   taskAlerts: [],
   taskList: [],
-  routeNow:null
+  routeNow: null
 
 
 
@@ -23,7 +23,7 @@ export const getters = {
 }
 
 export const mutations = {
-  testUpdate(state,route){
+  testUpdate(state, route) {
     state.routeNow = route
 
   },
@@ -141,23 +141,46 @@ export const actions = {
 
 
         if (res.status == "success") {
-          let alert = { 'alertType': 'jobTriggered', 'alertID': res.taskID }
+          let alert = {
+            'alertType': 'Info',
+            'alertID': 'Job triggered successfully',
+            'alertColor': 'green'
+          }
           commit('changeDownloadStatus');
           commit('addTaskAlert', alert);
 
         }
         else if (res.status == "no_sections") {
-          let alert = { 'alertType': 'noSections', 'alertID': "Please select sections" }
+          let alert = {
+            'alertType': 'Sections',
+            'alertID': "Please select sections",
+            'alertColor': 'red'
+          }
           commit('changeDownloadStatus');
           commit('addTaskAlert', alert);
         }
         else if (res.status == "pptx_exists") {
-          let alert = { 'alertType': 'pptxExists', 'alertID': "Looks the requested deck already exists under Downloads" }
+          let alert = {
+            'alertType': 'Powerpoint',
+            'alertID': "Looks the requested deck already exists under Downloads",
+            'alertColor': 'red'
+          }
           commit('changeDownloadStatus');
           commit('addTaskAlert', alert);
         }
 
 
+
+      })
+      .catch((err) => {
+        let stringErr=String(err)
+        let alert = {
+          'alertType': 'API Error',
+          'alertID': stringErr.replace('Error: ',''),
+          'alertColor': 'red'
+        }
+        commit('addTaskAlert', alert);
+        commit('changeDownloadStatus');
 
       });
 
@@ -188,12 +211,12 @@ export const actions = {
         link.remove()
 
         dispatch("registerDownload", task)
-        commit('turnDownloadOff',task)
+        commit('turnDownloadOff', task)
 
 
       })
 
-    
+
   },
 
   async registerDownload({ commit }, taskID) {
@@ -243,11 +266,5 @@ export const actions = {
 
   },
 
-  async getUserInfo({commit}){
-    const res = this.$axios.$get("/v1/me")
-    .then((res)=>{
-      // console.log(res.first_name)
-      this.$auth.setUser(res.first_name)
-    })
-  }
+
 }

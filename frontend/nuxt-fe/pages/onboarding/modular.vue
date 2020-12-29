@@ -1,42 +1,118 @@
 <template>
-  <div class="w-full h-full sortable bg-gray-100">
-    <div class="fixed w-full pt-5">
+  <div class="w-full h-full sortable bg-gray-700">
+    <div
+      class="fixed z-0 w-5/12 pt-3 right-0"
+      v-if="this.$store.state.taskAlerts.length != 0"
+    >
       <alert
         v-for="(alert, id) in this.$store.state.taskAlerts"
         :key="id"
         :pkey="id"
         :alertID="alert.alertID"
         :alertType="alert.alertType"
+        :alertColor="alert.alertColor"
       />
     </div>
-    <div class="mx-auto w-10/12 h-auto mt-2">
-      <div class=" py-3 px-10 flex justify-around rounded-">
-        <p class="text-gray-900 font-lix font-light text-6xl tracking-wide">
+
+    <div class="mx-auto pt-5 z-10 w-full h-auto">
+      <div class="grid grid-cols-2 py-3 px-52">
+        <p
+          class="flex items-center justify-center text-gray-200 col-span-2 font-lix font-light text-8xl tracking-normal"
+        >
           Slidedeck
         </p>
-        <span class="flex items-center ">
-          <button
-            type="button"
-            class="inline-flex  items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <!-- Heroicon name: pencil -->
-            <svg
-              class="-ml-1 mr-2 h-5 w-5 text-gray-500 "
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-              />
-            </svg>
-            Edit
-          </button>
-        </span>
+
+        <div class="flex items-center justify-center col-span-1">
+          <div class="flex justify-center font-lix">
+            <span class="">
+              <button
+                type="button"
+                class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-sm text-sm font-medium text-white"
+                :class="{
+                  'cursor-not-allowed': this.$store.state.isFetchingPptx,
+                  'hover:bg-white': !this.$store.state.isFetchingPptx,
+                  'hover:text-lix-second': !this.$store.state.isFetchingPptx,
+                }"
+                :disabled="this.$store.state.isFetchingPptx"
+                @click="downloadPptx"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="h-5 w-5 -mt-0 mr-2"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                <p
+                  class="cursor-pointer"
+                  :class="{
+                    hidden: this.$store.state.isFetchingPptx,
+                    'cursor-pointer': !this.$store.state.isFetchingPptx,
+                  }"
+                >
+                  Create Slides
+                </p>
+                <p :class="{ hidden: !this.$store.state.isFetchingPptx }">
+                  Building pptx ...
+                </p>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="flex items-center justify-center col-span-1">
+          <div class="flex justify-center font-lix">
+            <span class="">
+              <button
+                type="button"
+                class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-sm text-sm font-medium text-white"
+                :class="{
+                  'cursor-not-allowed': this.$store.state.isFetchingPptx,
+                  'hover:bg-white': !this.$store.state.isFetchingPptx,
+                  'hover:text-lix-second': !this.$store.state.isFetchingPptx,
+                }"
+                :disabled="this.$store.state.isFetchingPptx"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  class="h-5 w-5 -mt-0 mr-2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+                <p
+                  class="cursor-pointer"
+                  :class="{
+                    hidden: this.$store.state.isFetchingPptx,
+                    'cursor-pointer': !this.$store.state.isFetchingPptx,
+                  }"
+                >
+                  Copy all sections
+                </p>
+                <p :class="{ hidden: !this.$store.state.isFetchingPptx }">
+                  Building pptx ...
+                </p>
+              </button>
+            </span>
+          </div>
+        </div>
       </div>
-      <Section />
     </div>
+
+    <Section />
   </div>
 </template>
 
@@ -48,6 +124,12 @@ export default {
   components: {
     Section,
     alert,
+  },
+  methods: {
+    downloadPptx() {
+      this.$store.commit("changeDownloadStatus");
+      this.$store.dispatch("sendTask");
+    },
   },
   async created() {
     this.$store.dispatch("getSections");

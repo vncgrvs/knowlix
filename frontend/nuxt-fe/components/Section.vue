@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-around pt-10 font-lix">
+  <div class="flex justify-around pt-5 font-lix ">
     <!-- List One -->
     <div class="block justify-center w-2/5 mb-10 pb-5 min-h-screen rounded-md">
       <p
