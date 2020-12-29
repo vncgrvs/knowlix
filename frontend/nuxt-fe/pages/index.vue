@@ -1,16 +1,18 @@
 <template>
-  <div class="container">
-    
-    <h2> NEW LANDING PAGE</h2>
+  <div class="">
+    <landingpage />
   </div>
 </template>
 
 <script>
 
+import landingpage from "../components/landingpage";
 
 
 export default {
   components: {
+    landingpage
+    
     
   },
   computed: {},

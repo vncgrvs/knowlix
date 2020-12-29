@@ -1,3 +1,4 @@
+aiofiles==0.6.0
 amqp==5.0.2
 bcrypt==3.2.0
 billiard==3.6.3.0
