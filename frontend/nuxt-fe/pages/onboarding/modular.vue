@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full sortable bg-gray-700">
+  <div class="w-full h-full sortable bg-gray-200">
     <div
       class="fixed z-0 w-5/12 pt-3 right-0"
       v-if="this.$store.state.taskAlerts.length != 0"
@@ -17,21 +17,21 @@
     <div class="mx-auto pt-5 z-10 w-full h-auto">
       <div class="grid grid-cols-2 py-3 px-52">
         <p
-          class="flex items-center justify-center text-gray-200 col-span-2 font-lix font-light text-8xl tracking-normal"
+          class="flex items-center justify-center text-lix-second col-span-2 font-lix font-semibold text-6xl tracking-normal mb-4"
         >
-          Slidedeck
+          Slidedeck Manager
         </p>
 
-        <div class="flex items-center justify-center col-span-1">
+        <div class="flex items-center justify-end col-span-1 mr-4">
           <div class="flex justify-center font-lix">
             <span class="">
               <button
                 type="button"
-                class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-sm text-sm font-medium text-white"
+                class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-md text-sm font-medium bg-white text-lix-second"
                 :class="{
                   'cursor-not-allowed': this.$store.state.isFetchingPptx,
-                  'hover:bg-white': !this.$store.state.isFetchingPptx,
-                  'hover:text-lix-second': !this.$store.state.isFetchingPptx,
+                  'hover:bg-lix-main': !this.$store.state.isFetchingPptx,
+                  'hover:text-white': !this.$store.state.isFetchingPptx,
                 }"
                 :disabled="this.$store.state.isFetchingPptx"
                 @click="downloadPptx"
@@ -66,16 +66,16 @@
             </span>
           </div>
         </div>
-        <div class="flex items-center justify-center col-span-1">
-          <div class="flex justify-center font-lix">
+        <div class="flex items-center justify-start col-span-1 ml-4">
+          <div class="flex justify-end font-lix">
             <span class="">
               <button
                 type="button"
-                class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-sm text-sm font-medium text-white"
+                class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-md text-sm font-medium bg-white text-lix-second"
                 :class="{
                   'cursor-not-allowed': this.$store.state.isFetchingPptx,
-                  'hover:bg-white': !this.$store.state.isFetchingPptx,
-                  'hover:text-lix-second': !this.$store.state.isFetchingPptx,
+                  'hover:bg-lix-main': !this.$store.state.isFetchingPptx,
+                  'hover:text-white': !this.$store.state.isFetchingPptx,
                 }"
                 :disabled="this.$store.state.isFetchingPptx"
               >

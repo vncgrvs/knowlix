@@ -215,6 +215,17 @@ export const actions = {
 
 
       })
+      .catch((err) => {
+        let stringErr=String(err)
+        let alert = {
+          'alertType': 'API Error',
+          'alertID': stringErr.replace('Error: ',''),
+          'alertColor': 'red'
+        }
+        commit('addTaskAlert', alert);
+        commit('turnDownloadOff', task)
+
+      })
 
 
   },

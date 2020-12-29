@@ -147,10 +147,10 @@
                       {{ task.created }}
                     </td>
                     <td
-                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-center "
+                      class="px-6 py-4 whitespace-nowrap  flex justify-center items-center h-full"
                     >
                       <a
-                        class="text-indigo-600 hover:text-indigo-900 cursor-pointer flex items-center"
+                        class=" hover:text-white hover:bg-lix-main hover:font-bold text-xs font-bold cursor-pointer inline-flex align-middle rounded-full bg-gray-400 text-white py-1 px-2 "
                         v-if="task.status == 'SUCCESS' && task.downloading == false"
                         @click="getDownload(task.taskID)"
                         >Download</a
