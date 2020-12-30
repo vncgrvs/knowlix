@@ -67,6 +67,7 @@ class User(BaseModel):
     password: str
     first_name: str
     last_name: str
+    user_id: str
 
 
 class TokenData(BaseModel):
@@ -75,7 +76,7 @@ class TokenData(BaseModel):
 
 class Token(BaseModel):
     access_token: str
-    refresh_token: str
+    
 
 
 class Download(BaseModel):
@@ -200,28 +201,36 @@ async def getDownloads(token: bool = Depends(utils.is_access_token_valid)):
 async def create_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = utils.authenticate_user(username=form_data.username,
                                    password=form_data.password)
+    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    data = {"sub": user["username"],
-            "role": user["role"],
-            "first_name": user["first_name"]}
+    
+    data_refresh_token = {"sub": user["username"],
+                          "role": user["role"],
+                          "first_name": user["first_name"],
+                          }
+    refresh_token_expires = timedelta(
+        minutes=config.REFRESH_TOKEN_EXPIRE_MINUTES)
+    refresh_token = utils.create_refresh_token(
+        data=data_refresh_token, expires_delta=refresh_token_expires)
+
+    data_access_token = {"sub": user["username"],
+                         "role": user["role"],
+                         "first_name": user["first_name"],
+                         "user_id":user["_id"],
+                         "refresh_token": refresh_token}
 
     access_token_expires = timedelta(
         minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = utils.create_access_token(
-        data=data, expires_delta=access_token_expires
+        data=data_access_token, expires_delta=access_token_expires
     )
 
-    refresh_token_expires = timedelta(
-        minutes=config.REFRESH_TOKEN_EXPIRE_MINUTES)
-    refresh_token = utils.create_refresh_token(
-        data=data, expires_delta=refresh_token_expires)
-
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return {"access_token": access_token}
 
 
 @app.post("/v1/register", tags=["auth"])
@@ -242,7 +251,7 @@ async def read_users(current_user: User = Depends(utils.get_current_tokenuser)):
     return current_user
 
 
-@app.post("/v1/refreshToken", tags=["auth"])
+@app.post("/v1/refreshToken",response_model=Token, tags=["auth"])
 async def refresh_token(user: User = Depends(utils.is_refresh_token_valid)):
     
     if not user:
@@ -251,25 +260,31 @@ async def refresh_token(user: User = Depends(utils.is_refresh_token_valid)):
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    data = {"sub": user["username"],
-            "role": user["role"],
-            "first_name": user["first_name"]}
-    access_token_expires = timedelta(
-        minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = utils.create_access_token(
-        data=data, expires_delta=access_token_expires
-    )
+    data_refresh_token = {"sub": user["username"],
+                          "role": user["role"],
+                          "first_name": user["first_name"]}
 
     refresh_token_expires = timedelta(
         minutes=config.REFRESH_TOKEN_EXPIRE_MINUTES)
     refresh_token = utils.create_refresh_token(
-        data=data, expires_delta=refresh_token_expires)
+        data=data_refresh_token, expires_delta=refresh_token_expires)
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    data_access_token = {"sub": user["username"],
+                         "role": user["role"],
+                         "first_name": user["first_name"],
+                         "user_id":user["_id"],
+                         "refresh_token": refresh_token}
+
+    access_token_expires = timedelta(
+        minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = utils.create_access_token(
+        data=data_access_token, expires_delta=access_token_expires
+    )
+
+    return {"access_token": access_token}
 
 
-@app.get("/v1/header" ,tags=["auth"])
+@app.get("/v1/header", tags=["auth"])
 async def get_headers(headers: Request):
 
-    
     return {"headers": headers.headers}

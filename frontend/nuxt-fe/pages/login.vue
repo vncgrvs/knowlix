@@ -104,7 +104,6 @@
                     type="text"
                     v-model="login.username"
                     placeholder="Username"
-                    
                   />
                 </div>
                 <div class="mb-4">
@@ -119,7 +118,6 @@
                     id="password"
                     v-model="login.password"
                     type="password"
-                    
                     placeholder="******************"
                   />
                   <p class="text-xs italic text-red-500">
@@ -165,10 +163,9 @@
 </template>
 
 <script>
-import qs from 'qs';
+import qs from "qs";
 
 export default {
-
   name: "login",
   data() {
     return {
@@ -180,34 +177,25 @@ export default {
   },
   methods: {
     async userLogin() {
-      try {
-        let data = qs.stringify({
-          username: this.login.username,
-          password: this.login.password,
-        });
-        
-        let response = await this.$auth.loginWith("local", {
-          data: data,
-        })
-        
-        console.log(this.$auth)
-        // this.$router.push("/");
-        
-      } catch (error) {
-        console.log(error);
-      }
+       this.$store.dispatch("auth/login", this.login);
     },
   },
-  beforeRouteLeave (to, from, next) {
+
+  beforeRouteLeave(to, from, next) {
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
     // console.log(to.name)
+
+    next();
+    this.$store.commit("changeCurrentRoute", to.name);
+  },
+
+  mounted() {
     
-    next()
-    this.$store.commit("changeCurrentRoute", to.name)
-    
-  }
+  },
+
+
 };
 </script>
 

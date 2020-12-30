@@ -19,9 +19,6 @@ users = client["users"]["users"]
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/token")
 
-class RefreshToken(BaseModel):
-    refresh_token: str
-
 
 def check_existence(sections, db):
     exists_already = False
@@ -37,7 +34,7 @@ def check_existence(sections, db):
 
 
 def authenticate_user(username: str, password: str, db=users):
-    user = get_user(username=username)
+    user = get_user(username=username, include_pw=True, include_id=True)
     hashed_pw = user["password"]
 
     if not user:
@@ -69,6 +66,7 @@ def create_user(username: str, password: str, first_name: str, last_name: str,
 
     return {"created": created, "error": error}
 
+
 def create_refresh_token(data: dict, expires_delta: timedelta):
     to_encode = data.copy()
     expires = datetime.utcnow() + expires_delta
@@ -76,6 +74,7 @@ def create_refresh_token(data: dict, expires_delta: timedelta):
     refresh_token = jwt.encode(
         to_encode, config.REFRESH_KEY, algorithm=config.ALGORITHM)
     return refresh_token
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -89,12 +88,74 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def get_user(username: str, include_pw=True, db=users):
+def get_user(username: str, include_pw=True, include_id=True, db=users):
 
     if include_pw:
-        user = db.find_one({"username": username}, {"_id": 0})
+        user = db.find_one({"username": username}, {
+            "_id": 1,
+            "username": 1,
+            "password": 1,
+            "first_name": 1,
+            "last_name": 1,
+            "role": 1
+        })
+        
+        user.update({"_id": str(user["_id"])})
+
+    elif include_id:
+        user = db.find_one({"username": username}, {
+            "_id": 1,
+            "username": 1,
+            "password": 1,
+            "first_name": 1,
+            "last_name": 1,
+            "role": 1
+        })
+        user.update({"_id": str(user["_id"])})
+
+    elif (include_pw and include_id):
+        user = db.find_one({"username": username}, {
+            "_id": 1,
+            "username": 1,
+            "password": 1,
+            "first_name": 1,
+            "last_name": 1,
+            "role": 1
+        })
+        user.update({"_id": str(user["_id"])})
+
+    elif (not include_pw and include_id):
+        user = db.find_one({"username": username}, {
+            "_id": 1,
+            "username": 1,
+            "password": 1,
+            "first_name": 1,
+            "last_name": 1,
+            "role": 1
+        })
+        user.update({"_id": str(user["_id"])})
+
+    elif (include_pw and not include_id):
+        user = db.find_one({"username": username}, {
+            "_id": 0,
+            "username": 1,
+            "password": 1,
+            "first_name": 1,
+            "last_name": 1,
+            "role": 1
+        })
+        
+
     else:
-        user = db.find_one({"username": username}, {"_id": 0, "password": 0})
+        user = db.find_one({"username": username}, {
+            "_id": 0,
+            "username": 1,
+            "password": 1,
+            "first_name": 1,
+            "last_name": 1,
+            "role": 1
+        })
+        
 
     return user
 
@@ -114,31 +175,48 @@ async def is_access_token_valid(token: str = Depends(oauth2_scheme)):
                              algorithms=[config.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise credentials_exception 
+            raise credentials_exception
         return True
     except JWTError:
         raise credentials_exception
         return False
 
-async def is_refresh_token_valid(token: RefreshToken ):
-    credentials_exception = HTTPException(
+
+async def is_refresh_token_valid(token: str = Depends(oauth2_scheme)):
+    access_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Refresh Token invalid",
+        detail="Access Token invalid",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    
+
+    refresh_token_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Access Token invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
     try:
-        payload = jwt.decode(token.refresh_token, config.REFRESH_KEY,
-                             algorithms=[config.ALGORITHM])
-        username: str = payload.get("sub")
-        user = get_user(username=username, include_pw=False)
-        if username is None:
-            raise credentials_exception
-        return user
+        access_payload = jwt.decode(token, config.SECRET_KEY,
+                                    algorithms=[config.ALGORITHM])
+
+        refresh_token: str = access_payload.get("refresh_token")
+        username: str = access_payload.get("sub")
+
+        try:
+            refresh_token_payload = jwt.decode(refresh_token, config.REFRESH_KEY,
+                                               algorithms=[config.ALGORITHM])
+
+            user = get_user(username=username,
+                            include_id=True, include_pw=False)
+
+            return user
+
+        except JWTError:
+            raise refresh_token_exception
+
     except JWTError:
-        
-        raise credentials_exception
-        
+
+        raise access_exception
 
 
 async def get_current_tokenuser(token: str = Depends(oauth2_scheme)):
@@ -163,5 +241,4 @@ async def get_current_tokenuser(token: str = Depends(oauth2_scheme)):
 
 
 def get_header(header: Optional[List[str]] = Header(None)):
-    return header 
-    
+    return header
