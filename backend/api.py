@@ -1,5 +1,5 @@
 import config
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -75,7 +75,7 @@ class TokenData(BaseModel):
 
 class Token(BaseModel):
     access_token: str
-    token_type: str
+    refresh_token: str
 
 
 class Download(BaseModel):
@@ -87,7 +87,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/token")
 
 
 @app.get("/v1/sections", tags=["powerpoint"])
-async def provide_sections(token: bool = Depends(utils.is_token_valid)):
+async def provide_sections(token: bool = Depends(utils.is_access_token_valid)):
 
     sections = get_sections(pres)
 
@@ -99,7 +99,7 @@ async def provide_sections(token: bool = Depends(utils.is_token_valid)):
 
 
 @app.post("/v1/pptxjob", tags=["job management"])
-async def trigger_pptx_task(pptx: PPTX, token: bool = Depends(utils.is_token_valid)):
+async def trigger_pptx_task(pptx: PPTX, token: bool = Depends(utils.is_access_token_valid)):
     task_name = "pptx"
     sections = pptx.sections
     no_sections = len(sections)
@@ -144,7 +144,7 @@ async def trigger_pptx_task(pptx: PPTX, token: bool = Depends(utils.is_token_val
 
 
 @app.post("/v1/download", tags=["powerpoint"])
-async def download_pptx(download: Download, token: bool = Depends(utils.is_token_valid)):
+async def download_pptx(download: Download, token: bool = Depends(utils.is_access_token_valid)):
 
     task_id = download.taskID
 
@@ -158,7 +158,7 @@ async def download_pptx(download: Download, token: bool = Depends(utils.is_token
 
 
 @app.post("/v1/registerDownload", tags=["powerpoint"], status_code=201)
-async def register_download(task_id: Download, token: bool = Depends(utils.is_token_valid)):
+async def register_download(task_id: Download, token: bool = Depends(utils.is_access_token_valid)):
     task_id = task_id.taskID
 
     res = db.update_one({"kwargs.customID": task_id},
@@ -171,7 +171,7 @@ async def register_download(task_id: Download, token: bool = Depends(utils.is_to
 
 
 @app.get("/v1/getDownloads", tags=["powerpoint"])
-async def getDownloads(token: bool = Depends(utils.is_token_valid)):
+async def getDownloads(token: bool = Depends(utils.is_access_token_valid)):
     res = db.find({}).sort(
         [("kwargs.date_started", pymongo.DESCENDING)]).limit(10)
     results = list()
@@ -209,12 +209,19 @@ async def create_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     data = {"sub": user["username"],
             "role": user["role"],
             "first_name": user["first_name"]}
+
     access_token_expires = timedelta(
         minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = utils.create_access_token(
         data=data, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    refresh_token_expires = timedelta(
+        minutes=config.REFRESH_TOKEN_EXPIRE_MINUTES)
+    refresh_token = utils.create_refresh_token(
+        data=data, expires_delta=refresh_token_expires)
+
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 @app.post("/v1/register", tags=["auth"])
@@ -236,8 +243,33 @@ async def read_users(current_user: User = Depends(utils.get_current_tokenuser)):
 
 
 @app.post("/v1/refreshToken", tags=["auth"])
-async def refresh_token(token: str = Depends(oauth2_scheme)):
+async def refresh_token(user: User = Depends(utils.is_refresh_token_valid)):
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    data = {"sub": user["username"],
+            "role": user["role"],
+            "first_name": user["first_name"]}
+    access_token_expires = timedelta(
+        minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = utils.create_access_token(
+        data=data, expires_delta=access_token_expires
+    )
 
-    refreshed_token = utils.refresh_token(token)
+    refresh_token_expires = timedelta(
+        minutes=config.REFRESH_TOKEN_EXPIRE_MINUTES)
+    refresh_token = utils.create_refresh_token(
+        data=data, expires_delta=refresh_token_expires)
 
-    return {"refresh_token": refreshed_token, "token_type": "bearer"}
+    return {"access_token": access_token, "refresh_token": refresh_token}
+
+
+@app.get("/v1/header" ,tags=["auth"])
+async def get_headers(headers: Request):
+
+    
+    return {"headers": headers.headers}

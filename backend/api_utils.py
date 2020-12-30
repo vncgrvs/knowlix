@@ -1,6 +1,6 @@
 import pymongo
 from pymongo import MongoClient
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Header
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import os
 from passlib.context import CryptContext
@@ -9,14 +9,18 @@ import config
 from passlib.context import CryptContext
 from datetime import timedelta, datetime
 
-from typing import Optional
+from typing import Optional, List
 import config
+from pydantic import BaseModel
 
 MONGODB = os.getenv("MONGODB")
 client = MongoClient(MONGODB)
 users = client["users"]["users"]
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/token")
+
+class RefreshToken(BaseModel):
+    refresh_token: str
 
 
 def check_existence(sections, db):
@@ -65,6 +69,13 @@ def create_user(username: str, password: str, first_name: str, last_name: str,
 
     return {"created": created, "error": error}
 
+def create_refresh_token(data: dict, expires_delta: timedelta):
+    to_encode = data.copy()
+    expires = datetime.utcnow() + expires_delta
+    to_encode.update({"exp": expires})
+    refresh_token = jwt.encode(
+        to_encode, config.REFRESH_KEY, algorithm=config.ALGORITHM)
+    return refresh_token
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -92,10 +103,10 @@ def verify_pw(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-async def is_token_valid(token: str = Depends(oauth2_scheme)):
+async def is_access_token_valid(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Credentials are invalid",
+        detail="Access Token invalid",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
@@ -103,11 +114,31 @@ async def is_token_valid(token: str = Depends(oauth2_scheme)):
                              algorithms=[config.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise credentials_exception
+            raise credentials_exception 
         return True
     except JWTError:
         raise credentials_exception
         return False
+
+async def is_refresh_token_valid(token: RefreshToken ):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Refresh Token invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    try:
+        payload = jwt.decode(token.refresh_token, config.REFRESH_KEY,
+                             algorithms=[config.ALGORITHM])
+        username: str = payload.get("sub")
+        user = get_user(username=username, include_pw=False)
+        if username is None:
+            raise credentials_exception
+        return user
+    except JWTError:
+        
+        raise credentials_exception
+        
 
 
 async def get_current_tokenuser(token: str = Depends(oauth2_scheme)):
@@ -131,32 +162,6 @@ async def get_current_tokenuser(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
 
 
-def refresh_token(token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Credentials are invalid",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
-    try:
-        payload = jwt.decode(token, config.SECRET_KEY,
-                             algorithms=[config.ALGORITHM])
-
-        username: str = payload.get("sub")
-        user = get_user(username=username, include_pw=False)
-        expiration_delta = timedelta(
-            minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
-        new_expiration_date = datetime.utcnow() + expiration_delta
-
-        if user is None:
-            raise credentials_exception
-
-        new_token_data = payload.copy()
-        new_token_data.update({'exp': new_expiration_date})
-        new_token = jwt.encode(
-            new_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM)
-        
-        return new_token
-
-    except JWTError:
-        raise credentials_exception
+def get_header(header: Optional[List[str]] = Header(None)):
+    return header 
+    

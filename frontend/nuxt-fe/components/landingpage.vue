@@ -139,12 +139,13 @@
               <p class="h-10 font-thin text-left text-md text-gray-600 mb-12">
                 Tailor your onboarding flexibily to your customer's need. It's buffet time!
               </p>
-
+              <nuxt-link to="/onboarding/modular">
               <button
                 class="focus:outline-none bg-lix-second rounded-md w-full py-1 px-16 hover:bg-opacity-80 mb-10"
               >
                 <p class="text-white text-center">Get Modular Plan</p>
               </button>
+              </nuxt-link>
             </div>
           </div>
           <!-- card/body section -->

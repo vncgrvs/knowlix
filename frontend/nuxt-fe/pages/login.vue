@@ -186,12 +186,12 @@ export default {
           password: this.login.password,
         });
         
-        let response = await this.$auth.loginWith("localRefresh", {
+        let response = await this.$auth.loginWith("local", {
           data: data,
         })
         
         console.log(this.$auth)
-        this.$router.push("/");
+        // this.$router.push("/");
         
       } catch (error) {
         console.log(error);
