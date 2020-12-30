@@ -186,7 +186,7 @@ export default {
           password: this.login.password,
         });
         
-        let response = await this.$auth.loginWith("local", {
+        let response = await this.$auth.loginWith("localRefresh", {
           data: data,
         })
         

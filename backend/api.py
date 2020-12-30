@@ -233,3 +233,11 @@ async def register_user(user: User):
 @app.get("/v1/me", tags=["auth"])
 async def read_users(current_user: User = Depends(utils.get_current_tokenuser)):
     return current_user
+
+
+@app.post("/v1/refreshToken", tags=["auth"])
+async def refresh_token(token: str = Depends(oauth2_scheme)):
+
+    refreshed_token = utils.refresh_token(token)
+
+    return {"refresh_token": refreshed_token, "token_type": "bearer"}

@@ -1,11 +1,13 @@
 module.exports = {
-  purge: [
-    './components/**/*.{vue,js}',
-     './layouts/**/*.vue',
-     './pages/**/*.vue',
-     './plugins/**/*.{js,ts}',
-     './nuxt.config.{js,ts}',
-  ],
+  purge: 
+    [
+      './components/**/*.{vue,js}',
+      './layouts/**/*.vue',
+      './pages/**/*.vue',
+      './plugins/**/*.{js,ts}',
+      './nuxt.config.{js,ts}',
+    ],
+  
   darkMode: false, // or 'media' or 'class'
   theme: {
     borderColor: theme => ({
@@ -23,11 +25,11 @@ module.exports = {
 
     }),
 
-    textColor: theme =>({
+    textColor: theme => ({
       ...theme('colors'),
       'lix': '#166BFF',
       'lix-second': '#222F4B'
-      
+
     }),
 
     extend: {
@@ -37,7 +39,7 @@ module.exports = {
     }
   },
   variants: {
-    
+
   },
   plugins: [],
 }

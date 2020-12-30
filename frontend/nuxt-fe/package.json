@@ -14,7 +14,6 @@
     "@nuxtjs/proxy": "^2.0.1",
     "core-js": "^3.6.5",
     "datatables.net": "^1.10.22",
-    "element-ui": "^2.14.1",
     "nuxt": "^2.14.6",
     "nuxt-socket-io": "^1.1.13",
     "qs": "^6.7.0",

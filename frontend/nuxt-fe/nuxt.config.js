@@ -52,7 +52,7 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     { src: "~/plugins/vuelidate.js", mode: "client" },
-    {src:'@/plugins/element-ui'}
+    
     
   ],
 
@@ -64,27 +64,22 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/axios',
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/auth-next'
     
     
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    // '@nuxtjs/axios',
+    // '@nuxtjs/auth-next'
   ],
 
   auth: {
-    redirect: {
-      login: '/login',
-      logout: false,
-      callback: false,
-      home: '/'
-    },
     strategies: {
-      local: {
-        
+      localRefresh: {
+        scheme: 'refresh',
         token: {
           property: 'access_token',
           maxAge: 60 * 30 ,
@@ -92,18 +87,16 @@ export default {
         },
         refreshToken: {
           property: 'refresh_token',
-          data: 'refresh_token',
+          data: true,
+          tokenRequired: true ,
           maxAge: 60 * 30 
         },
-        user: {
-          property: 'first_name',
-          autoFetch: true
-        },
+        user: false,
         endpoints: {
           login: { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, url: '/v1/token', method: 'post' },
           user: { url: '/v1/me', method: 'get' },
-          logout: false
-          // refresh: { url: '/api/auth/refresh', method: 'post' },
+          logout: false,
+          refresh: { url: '/v1/refreshToken', method: 'post' },
           
         },
         // autoLogout: false

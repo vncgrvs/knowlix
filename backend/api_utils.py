@@ -129,3 +129,34 @@ async def get_current_tokenuser(token: str = Depends(oauth2_scheme)):
 
     except JWTError:
         raise credentials_exception
+
+
+def refresh_token(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Credentials are invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY,
+                             algorithms=[config.ALGORITHM])
+
+        username: str = payload.get("sub")
+        user = get_user(username=username, include_pw=False)
+        expiration_delta = timedelta(
+            minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+        new_expiration_date = datetime.utcnow() + expiration_delta
+
+        if user is None:
+            raise credentials_exception
+
+        new_token_data = payload.copy()
+        new_token_data.update({'exp': new_expiration_date})
+        new_token = jwt.encode(
+            new_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM)
+        
+        return new_token
+
+    except JWTError:
+        raise credentials_exception
