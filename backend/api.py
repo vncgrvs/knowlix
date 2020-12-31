@@ -201,7 +201,7 @@ async def getDownloads(token: bool = Depends(utils.is_access_token_valid)):
 async def create_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = utils.authenticate_user(username=form_data.username,
                                    password=form_data.password)
-    print(user)
+    
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
