@@ -205,7 +205,7 @@ async def create_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="USER_CREDENTIALS_INVALID",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
@@ -257,7 +257,7 @@ async def refresh_token(user: User = Depends(utils.is_refresh_token_valid)):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="USER_CREDENTIALS_INVALID",
             headers={"WWW-Authenticate": "Bearer"},
         )
     data_refresh_token = {"sub": user["username"],

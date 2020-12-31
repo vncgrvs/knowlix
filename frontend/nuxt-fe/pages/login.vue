@@ -178,6 +178,7 @@ export default {
   methods: {
     async userLogin() {
        this.$store.dispatch("auth/login", this.login);
+       
     },
   },
 

@@ -1,5 +1,6 @@
 
 import qs from 'qs';
+import jwt from 'jsonwebtoken';
 
 export const AUTH_MUTATIONS = {
     SET_USER: 'SET_USER',
@@ -10,9 +11,10 @@ export const AUTH_MUTATIONS = {
 
 export const state = () => ({
     access_token: null, // JWT access token
-    id: null, // user id
+    userID: null, // user id
     user: null,
-    loggedIn: null
+    loggedIn: null,
+    tokenExpires: null
 })
 
 export const mutations = {
@@ -23,8 +25,12 @@ export const mutations = {
     },
 
     // store new or updated token fields in the state
-    [AUTH_MUTATIONS.SET_PAYLOAD](state, { access_token }) {
+    [AUTH_MUTATIONS.SET_PAYLOAD](state, { access_token, username, userid, exp }) {
         state.access_token = access_token
+        state.userID = userid
+        state.user = username
+        state.loggedIn = true
+        state.tokenExpires = exp
     },
 
     // clear our the state, essentially logging out the user
@@ -58,7 +64,17 @@ export const actions = {
                 const accessToken = data.access_token
                 this.$axios.setToken(accessToken, 'Bearer')
 
-                commit(AUTH_MUTATIONS.SET_PAYLOAD, data)
+                let decodedToken = jwt.decode(accessToken)
+
+                let payload = {
+                    "access_token": accessToken,
+                    "username": decodedToken.first_name,
+                    "userid": decodedToken.user_id,
+                    "exp": decodedToken.exp
+                }
+
+                commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
+                this.$router.push('/')
 
             })
 
@@ -83,9 +99,16 @@ export const actions = {
 
     },
 
-    async getUserInfo({ commit, dispatch }, { }) {
+    async logout({ commit, dispatch }) {
 
+        this.$axios.setToken('')
+        commit(AUTH_MUTATIONS.LOGOUT)
+        this.$router.push('/login')
+    },
 
+    async registerUser({ commit, dispatch }) {
 
     }
+
+
 }

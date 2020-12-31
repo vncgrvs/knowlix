@@ -185,13 +185,13 @@ async def is_access_token_valid(token: str = Depends(oauth2_scheme)):
 async def is_refresh_token_valid(token: str = Depends(oauth2_scheme)):
     access_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Access Token invalid",
+        detail="ACCESS_TOKEN_INVALID",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
     refresh_token_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Access Token invalid",
+        detail="REFRESH_TOKEN_INVALID",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
@@ -214,7 +214,7 @@ async def is_refresh_token_valid(token: str = Depends(oauth2_scheme)):
         except JWTError:
             raise refresh_token_exception
 
-    except JWTError:
+    except JWTError: #specify errors better
 
         raise access_exception
 
@@ -222,7 +222,7 @@ async def is_refresh_token_valid(token: str = Depends(oauth2_scheme)):
 async def get_current_tokenuser(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Credentials are invalid",
+        detail="USER_CREDENTIALS_INVALID",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
