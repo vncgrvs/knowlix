@@ -133,7 +133,7 @@
                     Sign In
                   </button>
                 </div>
-                <hr class="mb-6 border-t" />
+                
                 <div class="text-center">
                   <nuxt-link to="/signup">
                     <a
@@ -163,10 +163,11 @@
 </template>
 
 <script>
-import qs from "qs";
+
 
 export default {
   name: "login",
+  middleware: 'guest',
   data() {
     return {
       login: {

@@ -1,6 +1,6 @@
-
-import qs from 'qs';
+import qs from "qs";
 import jwt from 'jsonwebtoken';
+
 
 export const AUTH_MUTATIONS = {
     SET_USER: 'SET_USER',
@@ -13,7 +13,7 @@ export const state = () => ({
     access_token: null, // JWT access token
     userID: null, // user id
     user: null,
-    loggedIn: null,
+    loggedIn: false,
     tokenExpires: null
 })
 
@@ -37,7 +37,7 @@ export const mutations = {
     [AUTH_MUTATIONS.LOGOUT](state) {
         state.id = null
         state.user = null
-        state.loggedIn = null
+        state.loggedIn = false
         state.access_token = null
 
     },
@@ -62,7 +62,7 @@ export const actions = {
             .then(({ data, config }) => {
 
                 const accessToken = data.access_token
-                this.$axios.setToken(accessToken, 'Bearer')
+                // this.$axios.setToken(accessToken, 'Bearer')
 
                 let decodedToken = jwt.decode(accessToken)
 
@@ -101,12 +101,41 @@ export const actions = {
 
     async logout({ commit, dispatch }) {
 
-        this.$axios.setToken('')
+        // this.$axios.setToken('')
         commit(AUTH_MUTATIONS.LOGOUT)
         this.$router.push('/login')
     },
 
     async registerUser({ commit, dispatch }) {
+
+    },
+
+    async refreshToken({commit, state}){
+        
+        const {refresh_token} = jwt.decode(state.access_token)
+
+        const req = await this.$axios
+            .post(
+                '/v1/refreshToken'
+            )
+
+            .then(({ data })=>{
+
+                const accessToken = data.access_token
+                // this.$axios.setToken(accessToken, 'Bearer')
+
+                let decodedToken = jwt.decode(accessToken)
+
+                let payload = {
+                    "access_token": accessToken,
+                    "username": decodedToken.first_name,
+                    "userid": decodedToken.user_id,
+                    "exp": decodedToken.exp
+                }
+
+                commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
+
+            })
 
     }
 

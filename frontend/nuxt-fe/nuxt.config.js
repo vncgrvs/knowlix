@@ -52,6 +52,10 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     { src: "~/plugins/vuelidate.js", mode: "client" },
+    { src: "~/plugins/auth-helpers.js", mode: "client" },
+    { src: "~/plugins/auth-axios.js" },
+    { src: "~/plugins/local-storage.js" },
+    { src: "~/plugins/axios.js" }
 
 
   ],
@@ -65,17 +69,17 @@ export default {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/axios',
     '@nuxtjs/tailwindcss',
-    
+
 
 
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    
+
   ],
 
-  
+
 
   axios: {
     baseURL: 'http://localhost',
@@ -83,7 +87,9 @@ export default {
 
   },
 
-
+  router: {
+    middleware: ['auth']
+  },
 
 
 

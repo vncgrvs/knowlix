@@ -136,6 +136,7 @@
 <script>
 export default {
     name:"signup",
+    middleware: 'guest',
 
 mounted() {
   console.log(this.$v)

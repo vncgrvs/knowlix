@@ -197,15 +197,17 @@ async def is_refresh_token_valid(token: str = Depends(oauth2_scheme)):
 
     try:
         access_payload = jwt.decode(token, config.SECRET_KEY,
-                                    algorithms=[config.ALGORITHM])
+                                    options={"verify_exp": False})
 
         refresh_token: str = access_payload.get("refresh_token")
         username: str = access_payload.get("sub")
+        
 
         try:
             refresh_token_payload = jwt.decode(refresh_token, config.REFRESH_KEY,
                                                algorithms=[config.ALGORITHM])
 
+            print(refresh_token_payload)
             user = get_user(username=username,
                             include_id=True, include_pw=False)
 

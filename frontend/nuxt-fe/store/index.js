@@ -211,6 +211,7 @@ export const actions = {
         link.remove()
 
         dispatch("registerDownload", task)
+        console.log("registered task",task)
         commit('turnDownloadOff', task)
 
 
