@@ -24,6 +24,7 @@ export default {
   components: {
     DownloadItem,
   },
+  middleware: 'auth',
 };
 </script>
 

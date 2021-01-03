@@ -127,6 +127,7 @@ export default {
     Section,
     alert,
   },
+  middleware: 'auth',
   methods: {
     downloadPptx() {
       this.$store.commit("changeDownloadStatus");

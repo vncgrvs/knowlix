@@ -167,7 +167,7 @@
 
 export default {
   name: "logout",
-  middleware: '',
+  middleware: 'guest',
   data() {
     return {
       login: {

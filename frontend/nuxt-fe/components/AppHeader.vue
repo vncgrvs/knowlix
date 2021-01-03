@@ -5,7 +5,7 @@
     @keydown.esc="toggleDropdownOff"
   >
     <nav
-      class="bg-lix-main z-50 items-center justify-center  shadow-lg grid grid-cols-5"
+      class="bg-lix-main z-50 items-center justify-center shadow-lg grid grid-cols-5"
     >
       <div class="col-span-3 my-10 pl-5">
         <nuxt-link to="/">
@@ -59,161 +59,160 @@
         </nuxt-link>
       </div>
 
-      
-      
-
-    <!-- Solutions  -->
+      <!-- Solutions  -->
       <div
-        class="flex flex-row  justify-center items-center z-10 py-3 outline-none col-span-1"
+        class="flex flex-row justify-center items-center z-10 py-3 outline-none col-span-1"
         tabindex="0"
         @keydown.esc="toggleDropdownOff"
+        @click="changeDropdownVis"
+        @mouseover="toggleDropdownOn"
+        @mouseleave="toggleDropdownOff"
+        v-if="this.$store.state.auth.loggedIn"
       >
         <div class="flex z-50 justify-center font-semibold text-gray-100">
           <p
             class="cursor-pointer border-2 border-transparent px-2 py-1 rounded-full hover:border-white"
-            @click="changeDropdownVis"
-            @mouseover="toggleDropdownOn"
           >
             Solutions
           </p>
         </div>
 
-   
-        <div
-          tabindex="0"
-          class="fixed top-20 pt-4 w-4/12 h-auto flex flex-col justify-center items-center"
-          v-show="this.$store.state.isDropdownVisible"
-          @mouseover="toggleDropdownOn"
-          @mouseleave="toggleDropdownOff"
-          @keydown.esc="toggleDropdownOff"
-        >
-          <div class="h-6 w-8 -mb-3 shadow-md">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              class="text-white"
-              stroke="currentColor"
-              fill="currentColor"
-              viewBox="0 0 30 18"
+        <transition name="solutions">
+          <div
+            tabindex="0"
+            class="fixed top-16 pt-4 w-4/12 h-auto flex flex-col justify-center items-center"
+            v-show="this.$store.state.isDropdownVisible"
+            @mouseover="toggleDropdownOn"
+            @mouseleave="toggleDropdownOff"
+            @keydown.esc="toggleDropdownOff"
+          >
+            <div class="h-6 w-8 -mb-3 shadow-md">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                class="text-white"
+                stroke="currentColor"
+                fill="currentColor"
+                viewBox="0 0 30 18"
+              >
+                <path
+                  d="M30,22,16,6,2,22Z"
+                  transform="translate(-1 -5)"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+
+            <div
+              class="bg-white w-full h-full shadow-md rounded-sm inline-flex"
             >
-              <path
-                d="M30,22,16,6,2,22Z"
-                transform="translate(-1 -5)"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-              />
-            </svg>
-          </div>
+              <div class="py-4 px-3 w-full">
+                <nuxt-link to="/">
+                  <div
+                    class="flex flex-row pt-3 pb-3 hover:bg-gray-100 rounded-sm"
+                  >
+                    <div class="flex justify-start px-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="h-6 w-6 text-lix"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                        />
+                      </svg>
+                    </div>
+                    <div class="flex flex-col">
+                      <p class="text-gray-700">Basic Onboarding</p>
+                      <p class="text-xs text-gray-600 font-light leading-5">
+                        Use the 4-week sprint methodology as your onboarding
+                        guide and select the sprint slides you need.
+                      </p>
+                    </div>
+                  </div>
+                </nuxt-link>
 
-          <div class="bg-white w-full h-full shadow-md rounded-sm inline-flex">
-            <div class="py-4 px-3 w-full">
-              <nuxt-link to="/">
-                <div
-                  class="flex flex-row pt-3 pb-3 hover:bg-gray-100 rounded-sm"
-                >
-                  <div class="flex justify-start px-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      class="h-6 w-6 text-lix"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
-                      />
-                    </svg>
+                <nuxt-link to="/onboarding/modular">
+                  <div
+                    class="flex flex-row pt-3 pb-3 mb-4 hover:bg-gray-100 rounded-sm"
+                  >
+                    <div class="flex justify-start px-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="text-lix h-6 w-6"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+                        />
+                      </svg>
+                    </div>
+                    <div class="flex flex-col">
+                      <p class="text-gray-700">Modular Onboarding</p>
+                      <p class="text-xs text-gray-600 font-light leading-5">
+                        Quickly assemble your onboarding deck to fit your
+                        customer's needs.
+                      </p>
+                    </div>
                   </div>
-                  <div class="flex flex-col">
-                    <p class="text-gray-700">Basic Onboarding</p>
-                    <p class="text-xs text-gray-600 font-light leading-5">
-                      Use the 4-week sprint methodology as your onboarding guide
-                      and select the sprint slides you need.
-                    </p>
-                  </div>
-                </div>
-              </nuxt-link>
+                </nuxt-link>
 
-              <nuxt-link to="/onboarding/modular">
-                <div
-                  class="flex flex-row pt-3 pb-3 mb-4 hover:bg-gray-100 rounded-sm"
-                >
-                  <div class="flex justify-start px-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      class="text-lix h-6 w-6"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
-                      />
-                    </svg>
+                <nuxt-link to="/onboarding/downloads">
+                  <div
+                    class="flex flex-row pt-3 pb-3 mb-4 hover:bg-gray-100 rounded-sm"
+                  >
+                    <div class="flex justify-start px-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="text-lix h-6 w-6"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                        />
+                      </svg>
+                    </div>
+                    <div class="flex flex-col">
+                      <p class="text-gray-700">Downloads</p>
+                      <p class="text-xs text-gray-600 font-light leading-5">
+                        Download your final Onboarding Slidedeck.
+                      </p>
+                    </div>
                   </div>
-                  <div class="flex flex-col">
-                    <p class="text-gray-700">Modular Onboarding</p>
-                    <p class="text-xs text-gray-600 font-light leading-5">
-                      Quickly assemble your onboarding deck to fit your
-                      customer's needs.
-                    </p>
-                  </div>
-                </div>
-              </nuxt-link>
-
-              <nuxt-link to="/onboarding/downloads">
-                <div
-                  class="flex flex-row pt-3 pb-3 mb-4 hover:bg-gray-100 rounded-sm"
-                >
-                  <div class="flex justify-start px-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      class="text-lix h-6 w-6"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
-                      />
-                    </svg>
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="text-gray-700">Downloads</p>
-                    <p class="text-xs text-gray-600 font-light leading-5">
-                      Download your final Onboarding Slidedeck.
-                    </p>
-                  </div>
-                </div>
-              </nuxt-link>
+                </nuxt-link>
+              </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
 
-    <!-- Logout -->
-      <div class="flex flex-row  justify-center items-center py-3"
-      >
-        
-          <div
-            class="text-gray-100 flex font-semibold border-2 border-transparent px-2 py-1 rounded-full hover:bg-gray-100 hover:text-lix cursor-pointer"
-            @click="logUserOut"
-          >
-            Logout
-          </div>
-        
+      <!-- Logout -->
+      <div class="flex flex-row justify-center items-center py-3">
+        <div
+          class="text-gray-100 flex font-semibold border-2 border-transparent px-2 py-1 rounded-full hover:bg-gray-100 hover:text-lix cursor-pointer"
+          @click="logUserOut"
+          v-if="this.$store.state.auth.loggedIn"
+        >
+          Logout
+        </div>
       </div>
-      
     </nav>
   </header>
 </template>
@@ -227,7 +226,6 @@ export default {
   },
 
   methods: {
-    
     toggleDropdownOn() {
       this.$store.commit("toggleDropdownOn");
     },
@@ -237,10 +235,9 @@ export default {
     changeDropdownVis() {
       this.$store.commit("changeDropdownVis");
     },
-    logUserOut(){
-      this.$store.dispatch("auth/logUserOut")
-      
-    }
+    logUserOut() {
+      this.$store.dispatch("auth/logUserOut");
+    },
   },
   created() {},
 
@@ -261,4 +258,9 @@ export default {
 fontLIX {
   font-family: "Axiforma", sans-serif;
 }
+.solutions-enter-active {
+  animation: fadeIn;
+  animation-duration: 0.3s ;
+}
+
 </style>

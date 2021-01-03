@@ -88,7 +88,7 @@ export default {
   },
 
   router: {
-    middleware: ['auth']
+    middleware:['dropdown-helper']
   },
 
 

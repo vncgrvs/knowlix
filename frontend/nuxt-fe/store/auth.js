@@ -37,12 +37,13 @@ export const mutations = {
 
     // clear our the state, essentially logging out the user
     [AUTH_MUTATIONS.LOGOUT](state) {
-        state.id = ''
-        state.user = ''
+        state.id = null
+        state.user = null
         state.loggedIn = false
-        state.access_token = ''
-        state.tokenExpires = ''
-        state.userID = ''
+        state.access_token = null
+        state.tokenExpires = null
+        state.userID = null
+        localStorage.setItem('taskList', null)
 
         
     },
@@ -109,6 +110,7 @@ export const actions = {
      logUserOut({ commit, state }) {
         console.log("logout triggered...")
         commit(AUTH_MUTATIONS.LOGOUT)
+        this.$router.push("/login")
         
     },
 

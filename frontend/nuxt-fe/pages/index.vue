@@ -11,6 +11,7 @@ export default {
   components: {
     landingpage,
   },
+  middleware: 'auth',
   computed: {},
 
   methods: {},
