@@ -7,22 +7,39 @@ export const state = () => ({
   currentRoute: null,
   taskAlerts: [],
   taskList: [],
-  routeNow: null
+  routeNow: null,
+  isDropdownVisible: false
 
 
 
 })
-export const getters = {
-  isAuthenticated(state) {
-    return state.auth.loggedIn
-  },
 
-  loggedInUser(state) {
-    return state.auth.user
-  }
-}
 
 export const mutations = {
+  toggleDropdownOn(state) {
+    state.isDropdownVisible = true
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.add("overflow-hidden")
+  },
+  toggleDropdownOff(state) {
+    state.isDropdownVisible = false
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.remove("overflow-hidden");
+  },
+  changeDropdownVis(state) {
+    state.isDropdownVisible = !state.isDropdownVisible
+    const body = document.getElementsByTagName('body')[0];
+    
+    if (state.isDropdownVisible) {
+      const body = document.getElementsByTagName('body')[0];
+      body.classList.add("overflow-hidden")
+    }
+    else {
+      const body = document.getElementsByTagName('body')[0];
+      body.classList.remove("overflow-hidden");
+    }
+  },
+
   testUpdate(state, route) {
     state.routeNow = route
 
@@ -173,10 +190,10 @@ export const actions = {
 
       })
       .catch((err) => {
-        let stringErr=String(err)
+        let stringErr = String(err)
         let alert = {
           'alertType': 'API Error',
-          'alertID': stringErr.replace('Error: ',''),
+          'alertID': stringErr.replace('Error: ', ''),
           'alertColor': 'red'
         }
         commit('addTaskAlert', alert);
@@ -211,16 +228,16 @@ export const actions = {
         link.remove()
 
         dispatch("registerDownload", task)
-        console.log("registered task",task)
+        console.log("registered task", task)
         commit('turnDownloadOff', task)
 
 
       })
       .catch((err) => {
-        let stringErr=String(err)
+        let stringErr = String(err)
         let alert = {
           'alertType': 'API Error',
-          'alertID': stringErr.replace('Error: ',''),
+          'alertID': stringErr.replace('Error: ', ''),
           'alertColor': 'red'
         }
         commit('addTaskAlert', alert);

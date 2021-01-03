@@ -11,7 +11,7 @@ export default function ({ store, app: { $axios }, redirect }) {
       let refreshToken = decodedAccessToken.refresh_token
       let count = 0 
 
-      console.log(error.config)
+      console.log(error)
 
       if ((statusCode === 401 || statusCode === 422) ) {
 

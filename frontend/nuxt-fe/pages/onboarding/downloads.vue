@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import DownloadItem from "../components/DownloadItem";
+import DownloadItem from "../../components/DownloadItem";
 
 export default {
   components: {

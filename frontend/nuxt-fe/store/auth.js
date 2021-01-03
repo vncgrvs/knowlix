@@ -17,6 +17,8 @@ export const state = () => ({
     tokenExpires: null
 })
 
+
+  
 export const mutations = {
 
     [AUTH_MUTATIONS.SET_USER](state, { id, username }) {
@@ -35,11 +37,14 @@ export const mutations = {
 
     // clear our the state, essentially logging out the user
     [AUTH_MUTATIONS.LOGOUT](state) {
-        state.id = null
-        state.user = null
+        state.id = ''
+        state.user = ''
         state.loggedIn = false
-        state.access_token = null
+        state.access_token = ''
+        state.tokenExpires = ''
+        state.userID = ''
 
+        
     },
 }
 
@@ -99,15 +104,12 @@ export const actions = {
 
     },
 
-    async logout({ commit, dispatch }) {
+    
 
-        // this.$axios.setToken('')
+     logUserOut({ commit, state }) {
+        console.log("logout triggered...")
         commit(AUTH_MUTATIONS.LOGOUT)
-        this.$router.push('/login')
-    },
-
-    async registerUser({ commit, dispatch }) {
-
+        
     },
 
     async refreshToken({commit, state}){

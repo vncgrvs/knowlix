@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full sortable bg-gray-200">
+  <div class="w-full h-full sortable bg-gray-100">
     <div
       class="fixed z-0 w-5/12 pt-3 right-0"
       v-if="this.$store.state.taskAlerts.length != 0"
@@ -67,47 +67,49 @@
           </div>
         </div>
         <div class="flex items-center justify-start col-span-1 ml-4">
-          <div class="flex justify-end font-lix">
-            <span class="">
-              <button
-                type="button"
-                class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-md text-sm font-medium bg-white text-lix-second"
-                :class="{
-                  'cursor-not-allowed': this.$store.state.isFetchingPptx,
-                  'hover:bg-lix-main': !this.$store.state.isFetchingPptx,
-                  'hover:text-white': !this.$store.state.isFetchingPptx,
-                }"
-                :disabled="this.$store.state.isFetchingPptx"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  class="h-5 w-5 -mt-0 mr-2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-                <p
-                  class="cursor-pointer"
+          <nuxt-link to="/onboarding/downloads">
+            <div class="flex justify-end font-lix">
+              <span class="">
+                <button
+                  type="button"
+                  class="inline-flex items-center px-4 py-2 border-2 border-gray-300 rounded-md shadow-md text-sm font-medium bg-white text-lix-second"
                   :class="{
-                    hidden: this.$store.state.isFetchingPptx,
-                    'cursor-pointer': !this.$store.state.isFetchingPptx,
+                    'cursor-not-allowed': this.$store.state.isFetchingPptx,
+                    'hover:bg-lix-main': !this.$store.state.isFetchingPptx,
+                    'hover:text-white': !this.$store.state.isFetchingPptx,
                   }"
+                  :disabled="this.$store.state.isFetchingPptx"
                 >
-                  Copy all sections
-                </p>
-                <p :class="{ hidden: !this.$store.state.isFetchingPptx }">
-                  Building pptx ...
-                </p>
-              </button>
-            </span>
-          </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    class="h-5 w-5 -mt-0 mr-2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <p
+                    class="cursor-pointer"
+                    :class="{
+                      hidden: this.$store.state.isFetchingPptx,
+                      'cursor-pointer': !this.$store.state.isFetchingPptx,
+                    }"
+                  >
+                    Downloads
+                  </p>
+                  <p :class="{ hidden: !this.$store.state.isFetchingPptx }">
+                    Building pptx ...
+                  </p>
+                </button>
+              </span>
+            </div>
+          </nuxt-link>
         </div>
       </div>
     </div>

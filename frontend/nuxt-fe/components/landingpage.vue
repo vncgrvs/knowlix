@@ -1,6 +1,6 @@
 <template>
   <!-- header text -->
-  <div class="w-full h-full min-h-screen py-12 px-6 bg-gray-100 bg-opacity-50 font-lix">
+  <div class="w-full h-full min-h-screen py-12 px-6 bg-gray-100 bg-opacity-50 font-lix overflow-hidden">
     <div class="flex-col mb-6">
       <h2
         class="text-5xl text-center text-gray-700 font-extrabold tracking-tight mb-2"
@@ -10,7 +10,7 @@
       <p class="text-center font-thin text-gray-600 text-xl mb-6">
         Choose your approach according to your customer's profile
       </p>
-      <div class="h-1 mx-auto bg-lix-main w-24 opacity-75 rounded"></div>
+      <div class="h-1  mx-auto bg-lix-main w-24  rounded"></div>
     </div>
 
     <!-- cards pane -->

@@ -1,5 +1,6 @@
 module.exports = {
-  purge: 
+  
+  purge:
     [
       './components/**/*.{vue,js}',
       './layouts/**/*.vue',
@@ -7,7 +8,7 @@ module.exports = {
       './plugins/**/*.{js,ts}',
       './nuxt.config.{js,ts}',
     ],
-  
+
   darkMode: false, // or 'media' or 'class'
   theme: {
     borderColor: theme => ({
@@ -35,6 +36,9 @@ module.exports = {
     extend: {
       fontFamily: {
         'lix': ['Axiforma']
+      },
+      margin: {
+        '18': '4.5rem',
       }
     }
   },
