@@ -262,5 +262,9 @@ fontLIX {
   animation: fadeIn;
   animation-duration: 0.3s ;
 }
+.solutions-leave-active{
+  animation: fadeOut;
+  animation-duration: 0.5s ;
+}
 
 </style>
