@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full min-h-screen flex justify-center items-start mt-32 font-lix fixed"
+    class="w-full min-h-screen flex justify-center items-start mt-32 font-lix "
   >
     <div
       class="w-2/3 h-auto bg-gray-300 p-8 flex flex-row text-black rounded-sm shadow-md"
@@ -167,7 +167,7 @@ export default {
 
 <style>
 .login-leave-active{
-  animation:slideOutRight;
+  animation:slideOutUp;
   animation-duration: 0.3s;
   
 }

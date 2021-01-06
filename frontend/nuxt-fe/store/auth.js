@@ -14,11 +14,12 @@ export const state = () => ({
     userID: null, // user id
     user: null,
     loggedIn: false,
-    tokenExpires: null
+    tokenExpires: null,
+    loginFailed: false
 })
 
 
-  
+
 export const mutations = {
 
     [AUTH_MUTATIONS.SET_USER](state, { id, username }) {
@@ -45,8 +46,12 @@ export const mutations = {
         state.userID = null
         localStorage.setItem('taskList', null)
 
-        
+
     },
+
+    logginFailed(state) {
+        state.loginFailed = true
+    }
 }
 
 export const actions = {
@@ -84,15 +89,13 @@ export const actions = {
 
             })
 
-            .catch((err) => {
+            .catch(({ response }) => {
 
-                let stringErr = String(err)
-                let alert = {
-                    'alertType': 'API Error',
-                    'alertID': stringErr.replace('Error: ', ''),
-                    'alertColor': 'red'
+
+
+                if (response.data.detail === "USER_CREDENTIALS_INVALID" && response.status == 401) {
+
                 }
-                commit('addTaskAlert', alert);
 
             })
 
@@ -105,25 +108,25 @@ export const actions = {
 
     },
 
-    
 
-     logUserOut({ commit, state }) {
+
+    logUserOut({ commit, state }) {
         console.log("logout triggered...")
         commit(AUTH_MUTATIONS.LOGOUT)
         this.$router.push("/login")
-        
+
     },
 
-    async refreshToken({commit, state}){
-        
-        const {refresh_token} = jwt.decode(state.access_token)
+    async refreshToken({ commit, state }) {
+
+        const { refresh_token } = jwt.decode(state.access_token)
 
         const req = await this.$axios
             .post(
                 '/v1/refreshToken'
             )
 
-            .then(({ data })=>{
+            .then(({ data }) => {
 
                 const accessToken = data.access_token
                 // this.$axios.setToken(accessToken, 'Bearer')
