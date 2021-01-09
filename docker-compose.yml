@@ -10,12 +10,19 @@ services:
       - "3000:3000"
     depends_on: 
       - apihub
+      - mongodb1
+      - mongodb2
     volumes: 
       - ./frontend/nuxt-fe:/app
+      
     command: npm run dev
+    networks:
+      - mongonetwork
 
   nginx:
     build: ./nginx/
+    networks:
+      - mongonetwork
     container_name: nginx
     ports:
       - "80:80"
@@ -23,6 +30,8 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - nuxt
+      - mongodb1
+      - mongodb2
 
   celery:
     container_name: celery
@@ -30,21 +39,97 @@ services:
     volumes:
       - ./celery/server.py:/celery/server.py 
       - ./celery/worker.py:/celery/worker.py 
+      - pptxdecks:/celery/output
     environment: 
-      REDISSERVER: redis://redis
+      MONGODB: mongodb://mongodb2
       RABBITMQ: pyamqp://rabbitmq
+    networks:
+      - mongonetwork
     depends_on: 
-      - redis
+      - mongodb1
+      - mongodb2
       - rabbitmq
+  
+  celery-beat:
+    container_name: celery-beat
+    build: ./celery-beat/
+    volumes: 
+      - pptxdecks:/celery-beat/output
+    environment: 
+      MONGODB: mongodb://mongodb2
+      RABBITMQ: pyamqp://rabbitmq
+    networks:
+      - mongonetwork
+    entrypoint:
+      - /celery-beat/beat.sh
+    depends_on: 
+      - mongodb1
+      - mongodb2
+      - rabbitmq
+      - celery
+      
+  
+  mongo-stream:
+    container_name: mongo-stream
+    restart: on-failure
+    build: ./mongo-stream/
+    command: python3 -u server.py
+    environment: 
+      MONGODB: mongodb://mongodb2
+    ports: 
+      - "3333:3333"
+    depends_on: 
+      - mongo-startup
+      - mongodb1
+      - mongodb2
+    volumes: 
+      - ./mongo-stream/server.py:/usr/app/server.py
+    networks: 
+      - mongonetwork
+
+  mongodb1:
+    image: mongo:latest
+    container_name: replica1
+    networks:
+      - mongonetwork
+    ports:
+      - 30001:27017
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongodb2:
+    image: mongo:latest
+    container_name: replica2
+    volumes: 
+      - ./db-backup/primary:/data/db
+    networks:
+      - mongonetwork
+    ports:
+      - 30002:27017
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo-startup:
+    image: mongo
+    container_name: startup-agent
+    networks:
+      - mongonetwork
+    depends_on:
+      - mongodb1
+      - mongodb2
+
+    volumes:
+      - ./mongo-startup:/mongo-startup
+    entrypoint:
+      - /mongo-startup/initiate_replica.sh
 
   apihub:
     build: ./backend/
     container_name: apihub
     restart: on-failure
     environment: 
-      REDISSERVER: redis://redis
+      MONGODB: mongodb://mongodb2
       RABBITMQ: pyamqp://rabbitmq
     volumes:
+      - pptxdecks:/usr/app/output
       - type: bind
         source: ./backend/api.py
         target: /usr/app/api.py
@@ -63,22 +148,27 @@ services:
       - type: bind
         source: ./backend/master.pptx
         target: /usr/app/master.pptx
+      - type: bind
+        source: ./backend/config.py
+        target: /usr/app/config.py
+      - type: bind
+        source: ./backend/api_utils.py
+        target: /usr/app/api_utils.py
 
     command: uvicorn --host=0.0.0.0 --port=8000 api:app --reload
     ports:
       - "8000:8000"
     depends_on: 
-      - redis
+      - mongodb1
+      - mongo-startup
       - rabbitmq
+    networks:
+      - mongonetwork
 
-  redis:
-    container_name: redis
-    image: redis:6.0-buster
-    ports:
-      - "6379:6379"
-  
   rabbitmq:
     container_name: rabbitmq
+    networks:
+      - mongonetwork
     image: rabbitmq:3.8-management
     ports: 
       - "15672:15672"
@@ -87,11 +177,18 @@ services:
     container_name: flower
     image: mher/flower:0.9.5
     command: ["flower", "--broker=amqp://rabbitmq", "--port=5555"]
+    networks:
+      - mongonetwork 
     ports:
       - "5555:5555"
     depends_on:
-      - redis
+      - mongodb1
+      - mongodb2
       - rabbitmq
       - celery
     
-    
+networks:
+  mongonetwork:
+
+volumes: 
+  pptxdecks:
