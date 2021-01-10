@@ -27,7 +27,7 @@ def prepare_sections(keys, presentation, mapping, all_sections=False):
     root = etree.Element(
         '{http://schemas.openxmlformats.org/presentationml/2006/main}sldIdLst', nsmap=nmap)
 
-    # TODO: create toggle for
+   
     if (all_sections) and (len(keys) != 0):
         for key in keys:
             section = all_sections[key]

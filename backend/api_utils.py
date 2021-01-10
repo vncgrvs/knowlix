@@ -207,7 +207,7 @@ async def is_refresh_token_valid(token: str = Depends(oauth2_scheme)):
             refresh_token_payload = jwt.decode(refresh_token, config.REFRESH_KEY,
                                                algorithms=[config.ALGORITHM])
 
-            print(refresh_token_payload)
+            
             user = get_user(username=username,
                             include_id=True, include_pw=False)
 
