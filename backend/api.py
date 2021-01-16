@@ -24,7 +24,7 @@ pres = Presentation(file_path)
 MONGODB = os.getenv("MONGODB")
 client = MongoClient(MONGODB)
 db = client["taskdb"]["ta"]
-#k
+
 tags_metadata = [
     {
         "name": "powerpoint",
