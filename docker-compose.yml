@@ -68,7 +68,6 @@ services:
       - rabbitmq
       - celery
       
-  
   mongo-stream:
     container_name: mongo-stream
     restart: on-failure
@@ -186,7 +185,31 @@ services:
       - mongodb2
       - rabbitmq
       - celery
-    
+  
+  influxdb:
+      image: quay.io/influxdb/influxdb:v2.0.3
+      restart: on-failure
+      container_name: influxdb
+      ports:
+      - "8086:8086"
+      volumes: 
+        - ./influxdb/data:/var/lib/influxdb
+      networks: 
+        - mongonetwork
+
+  chronograf:
+      image: chronograf:latest
+      container_name: chronograf
+      entrypoint: 'chronograf --influxdb-url=http://influxdb:8086'
+      ports: 
+      - "8888:8888"
+      depends_on:
+        - influxdb
+      networks: 
+        - mongonetwork
+      volumes:
+        - ./influxdb/chronograf:/var/lib/chronograf
+
 networks:
   mongonetwork:
 
