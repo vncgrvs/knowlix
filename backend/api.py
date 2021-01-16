@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient
 import api_utils as utils
 
-#hell
+
 ## CONFIG ##
 file_path = "master.pptx"
 pres = Presentation(file_path)
