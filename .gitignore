@@ -13,4 +13,5 @@ data.json
 *.log
 /influxdb
 db-backup/
-/db-backup
+/db-backup/primary
+db-backup/primary/*
