@@ -5,12 +5,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import os
 from passlib.context import CryptContext
 from jose import JWTError, jwt
-import config
 from passlib.context import CryptContext
 from datetime import timedelta, datetime
 
 from typing import Optional, List
-import config
+from . import config as config
 from pydantic import BaseModel
 
 MONGODB = os.getenv("MONGODB")

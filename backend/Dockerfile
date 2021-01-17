@@ -4,8 +4,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /usr/app
 
 
-COPY req.txt ./
-COPY api.py core.py main.py master.pptx req.txt server.py api_utils.py config.py ./
+COPY . .
 
 RUN mkdir output  
 

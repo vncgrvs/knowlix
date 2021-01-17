@@ -66,7 +66,7 @@ export const actions = {
 
         const req = await this.$axios
             .post(
-                '/v1/token',
+                '/v1/auth/token',
                 data
             )
 
@@ -123,7 +123,7 @@ export const actions = {
 
         const req = await this.$axios
             .post(
-                '/v1/refreshToken'
+                'v1/auth/refreshToken'
             )
 
             .then(({ data }) => {

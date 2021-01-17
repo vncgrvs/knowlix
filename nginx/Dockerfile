@@ -20,6 +20,8 @@ RUN unlink /var/log/nginx/access.log \
     && chown nginx /var/log/nginx/*log \
     && chmod 644 /var/log/nginx/*log
 
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./.htpasswd /etc/nginx/.htpasswd
 
 COPY ./entrypoint.sh /entrypoint.sh
 RUN ["chmod", "+x", "/entrypoint.sh"]

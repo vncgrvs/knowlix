@@ -153,7 +153,7 @@ export const actions = {
 
     };
 
-    const send = await this.$axios.$post('/v1/pptxjob', onBoardingDeck, config)
+    const send = await this.$axios.$post('/v1/pptx/pptxjob', onBoardingDeck, config)
       .then((res) => {
 
 
@@ -216,7 +216,7 @@ export const actions = {
       },
     };
 
-    const send = await this.$axios.$post('/v1/download', taskID, config)
+    const send = await this.$axios.$post('/v1/pptx/download', taskID, config)
       .then((res) => {
 
         const url = window.URL.createObjectURL(new Blob([res]));
@@ -255,18 +255,18 @@ export const actions = {
         'Content-Type': 'application/json'
       },
     };
-    const send = await this.$axios.$post('/v1/registerDownload', task, config)
+    const send = await this.$axios.$post('/v1/pptx/registerDownload', task, config)
   },
 
   async getSections({ commit }) {
-    const res = await this.$axios.$get("/v1/sections")
+    const res = await this.$axios.$get("/v1/pptx/sections")
       .then((res) => {
         commit("updateList", res.data);
       });
   },
 
   async getDownloads({ commit }) {
-    const res = await this.$axios.$get('/v1/getDownloads')
+    const res = await this.$axios.$get('/v1/pptx/getDownloads')
       .then((res) => {
 
         commit('clearTaskList')

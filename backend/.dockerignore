@@ -1,6 +1,10 @@
 *.ipynb_checkpoint
 *__pychache__
 clean_output.py
+env/
+Dockerfile
+master_old.pptx
+
 
 myapp.log
 test.py 
