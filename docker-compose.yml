@@ -128,9 +128,9 @@ services:
       RABBITMQ: pyamqp://rabbitmq
     volumes:
       - pptxdecks:/usr/app/output
-      - ./modules:/usr/app/modules
-      - ./pptx:/usr/app/pptx
-      - ./utils:/usr/app/utils
+      - ./backend/modules:/usr/app/modules
+      - ./backend/pptx:/usr/app/pptx
+      - ./backend/utils:/usr/app/utils
       - type: bind
         source: ./backend/app/api.py
         target: /usr/app/api.py
