@@ -7,7 +7,7 @@ WORKDIR /usr/app
 COPY . .
 
 RUN mkdir output  
-RUN apt-get install libffi-dev
+
 
 RUN pip install --upgrade pip
 RUN pip install -r req.txt --no-cache-dir
