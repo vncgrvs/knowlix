@@ -1,7 +1,9 @@
 #!/bin/bash
 
 echo "Starting replica set initialize"
-until mongo --host mongodb1 --eval "print(\"waited for connection\")" && mongo --host mongodb2 --eval "print(\"waited for connection 2\")"
+echo "$MONGODB2"
+echo "$MONGODB1"
+until mongo --host mongodb1 --eval "print(\"waited for connection\")" && mongo --host mongodb2  --eval "print(\"waited for connection 2\")"
 do
     sleep 2
 done

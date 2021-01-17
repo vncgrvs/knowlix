@@ -90,6 +90,9 @@ services:
     container_name: replica1
     networks:
       - mongonetwork
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_USER}
+    #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PW}
     ports:
       - 30001:27017
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
@@ -101,19 +104,26 @@ services:
       - ./db-backup/primary:/data/db
     networks:
       - mongonetwork
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_USER}
+    #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PW}
     ports:
       - 30002:27017
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
 
   mongo-startup:
     image: mongo
+    # environment:  
+    #   USER: ${MONGO_DB_USER}
+    #   PW: ${MONGO_DB_PW}
     container_name: startup-agent
     networks:
-      - mongonetwork
+      - mongonetwork 
+    
     depends_on:
       - mongodb1
       - mongodb2
-
+    
     volumes:
       - ./mongo-startup:/mongo-startup
     entrypoint:
@@ -128,9 +138,9 @@ services:
       RABBITMQ: pyamqp://rabbitmq
     volumes:
       - pptxdecks:/usr/app/output
-      - ./backend/modules:/usr/app/modules
-      - ./backend/pptx:/usr/app/pptx
-      - ./backend/utils:/usr/app/utils
+      # - ./backend/modules:/usr/app/modules
+      # - ./backend/pptx:/usr/app/pptx
+      # - ./backend/utils:/usr/app/utils
       - type: bind
         source: ./backend/app/api.py
         target: /usr/app/api.py
