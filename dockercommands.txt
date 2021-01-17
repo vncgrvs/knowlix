@@ -11,4 +11,4 @@ git worktree add -b <new branch name> <path to branch> master
 git push origin some-branch
 
 # path on server
-/usr/docker-apps/knowlix
+/docker-apps/knowlix/
