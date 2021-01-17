@@ -79,7 +79,6 @@ class Token(BaseModel):
     access_token: str
     
 
-
 class Download(BaseModel):
     taskID: str
 
