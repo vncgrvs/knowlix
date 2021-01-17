@@ -12,7 +12,7 @@ write_api = client.write_api(write_options=SYNCHRONOUS)
 
 def log_user_login(user: str, bucket: str, api=write_api):
     try:
-        point = influxdb_client.Point("user_login").field(user, 1)
+        point = influxdb_client.Point("user_login").tag("user",user).field("login", 1)
         api.write(point)
     except Exception as err:
         print(err)
