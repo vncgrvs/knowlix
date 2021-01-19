@@ -143,8 +143,8 @@ export default {
   data() {
     return {
       login: {
-        username: "vncgrvs@gmail.com",
-        password: "jack4luna",
+        username: "",
+        password: "",
       },
     };
   },

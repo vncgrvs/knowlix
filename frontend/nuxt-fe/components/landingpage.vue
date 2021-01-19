@@ -3,6 +3,7 @@
   <div
     class="w-full h-full min-h-screen py-12 px-6 bg-gray-100 bg-opacity-50 font-lix overflow-hidden"
   >
+  <!-- Title -->
     <div class="flex-col mb-6">
       <h2
         class="text-5xl text-center text-gray-700 font-extrabold tracking-tight mb-2"

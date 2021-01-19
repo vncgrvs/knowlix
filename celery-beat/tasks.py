@@ -19,18 +19,26 @@ def clean_pptx(self):
         raw_filepath = item["result"]
         taskID = item["kwargs"]["customID"]
         filepath = parse_filepath(raw_filepath)
-        os.remove(filepath)
+
+        try:
+            os.remove(filepath)
+            print(f"removed {filepath}")
+        
+        except Exception:
+            pass
 
         deleted_filepath.append(filepath)
         deleted_taskid.append(taskID)
 
-    delete = db.delete_many({"kwargs.customID": {"$in": deleted_taskid}})
-    deleted_count = delete.deleted_count
+    delete = db.update_many(
+        {"kwargs.customID": {"$in": deleted_taskid}},
+        {"$set": {"kwargs.archived": True}})
+    modified_count = delete.modified_count
 
     package = {
         'tasks': deleted_taskid,
         'filePaths': deleted_filepath,
-        'deleted_count': deleted_count
+        'deleted_count': modified_count
     }
 
     return package

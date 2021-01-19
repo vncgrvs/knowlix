@@ -12,7 +12,7 @@ import pymongo
 from app.pptx.main import create_pptx, get_sections
 import os
 from datetime import datetime, timedelta
-
+from app.utils.stat_collector import log_sections
 
 file_path = "app/master.pptx"
 print(os.path)
@@ -26,11 +26,20 @@ router = APIRouter(
     tags=["powerpoint"],
 )
 
+
 class PPTX(BaseModel):
     sections: List[str]
+    user: str
+    user_id: str
+
+
+class GetDownloads(BaseModel):
+    user_id: str
+
 
 class Download(BaseModel):
     taskID: str
+
 
 @router.get("/sections", tags=["powerpoint"])
 async def provide_sections(token: bool = Depends(utils.is_access_token_valid)):
@@ -52,6 +61,8 @@ async def trigger_pptx_task(pptx: PPTX, token: bool = Depends(utils.is_access_to
     sections_available = True
     exists_already = False
     status = None
+    user = pptx.user
+    user_id = pptx.user_id
     custom_id = str(uuid.uuid4().hex)
     timestamp = datetime.now().isoformat()
 
@@ -59,7 +70,10 @@ async def trigger_pptx_task(pptx: PPTX, token: bool = Depends(utils.is_access_to
         'sections': sections,
         'customID': custom_id,
         'downloaded': False,
-        'date_started': timestamp
+        'date_started': timestamp,
+        'archived': False,
+        'user': user,
+        'user_id': user_id
 
     }
 
@@ -85,6 +99,7 @@ async def trigger_pptx_task(pptx: PPTX, token: bool = Depends(utils.is_access_to
         'sections': sections,
         'status': status
     }
+    log_sections(user=user, sections=sections, bucket="user-data")
 
     return JSONResponse(package)
 
@@ -116,9 +131,10 @@ async def register_download(task_id: Download, token: bool = Depends(utils.is_ac
     return {'changedDocuments': changed_docs}
 
 
-@router.get("/getDownloads", tags=["powerpoint"])
-async def getDownloads(token: bool = Depends(utils.is_access_token_valid)):
-    res = db.find({}).sort(
+@router.post("/getDownloads", tags=["powerpoint"])
+async def getDownloads(downloads: GetDownloads, token: bool = Depends(utils.is_access_token_valid)):
+    user_id = downloads.user_id
+    res = db.find({"kwargs.archived": False, "kwargs.user_id": user_id}).sort(
         [("kwargs.date_started", pymongo.DESCENDING)]).limit(10)
     results = list()
 

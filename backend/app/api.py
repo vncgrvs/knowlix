@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from .modules import auth, pptx, stats
+# from fastapi.middleware.cors import CORSMiddleware
 
 tags_metadata = [
     {

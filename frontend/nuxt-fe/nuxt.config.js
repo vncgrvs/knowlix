@@ -82,8 +82,10 @@ export default {
 
 
   axios: {
-    baseURL: 'http://localhost',
+    baseURL: 'http://knowlix.duckdns.org',
     // browserBaseURL: 'http://localhost/8000'
+    // dev: http://localhost
+    // prod: http://knowlix.duckdns.org
 
   },
 

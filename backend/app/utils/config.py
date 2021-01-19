@@ -6,6 +6,12 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 2
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 *30 #one month validity
 
-TOKEN_INFLUXDB = "p67wtF1qzVuAZwfsHbYBdOa27bITxxhFK5KNaDWhj0K5BeIb2yjk6-L2x1uBDACYGLCRFhPGTR_Id3kkPNe3fw=="
+TOKEN_INFLUXDB = "Nau2e2KRMD4hoCncXbpxOSBX0FIMCSKD_VX0vLRI7Nma9BgczLuUh_IVNzGEIUe6k0ssF-ZLazS9Iaoomf__yw=="
 ORG="leanix"
-URL="http://localhost:8086"
+URL="http://knowlix.duckdns.org:8086"
+
+
+## INFLUX DB HADEN:
+# User: HAC
+# PW:ZQ6*5%12rBPm
+#influx user create -n HAC -p ZQ6*5%12rBPm -o leanix -t Nau2e2KRMD4hoCncXbpxOSBX0FIMCSKD_VX0vLRI7Nma9BgczLuUh_IVNzGEIUe6k0ssF-ZLazS9Iaoomf__yw==

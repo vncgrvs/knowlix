@@ -29,7 +29,7 @@ export const mutations = {
   changeDropdownVis(state) {
     state.isDropdownVisible = !state.isDropdownVisible
     const body = document.getElementsByTagName('body')[0];
-    
+
     if (state.isDropdownVisible) {
       const body = document.getElementsByTagName('body')[0];
       body.classList.add("overflow-hidden")
@@ -143,9 +143,13 @@ export const actions = {
   },
 
   // API Calls //
-  async sendTask({ commit }) {
-
-    let onBoardingDeck = JSON.stringify({ "sections": this.state.userChoice })
+  async sendTask({ commit, rootState }) {
+    
+    let onBoardingDeck = JSON.stringify({
+      "sections": this.state.userChoice,
+      "user": rootState.auth.user,
+      "user_id": rootState.auth.userID
+    })
     var config = {
       headers: {
         'Content-Type': 'application/json',
@@ -265,8 +269,15 @@ export const actions = {
       });
   },
 
-  async getDownloads({ commit }) {
-    const res = await this.$axios.$get('/v1/pptx/getDownloads')
+  async getDownloads({ commit, rootState }) {
+    console.log(rootState.auth.userID)
+    let payload = JSON.stringify({ "user_id": rootState.auth.userID })
+    var config = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    };
+    const res = await this.$axios.$post('/v1/pptx/getDownloads', payload, config)
       .then((res) => {
 
         commit('clearTaskList')

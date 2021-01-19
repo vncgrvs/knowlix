@@ -144,6 +144,9 @@ services:
       - type: bind
         source: ./backend/app/api.py
         target: /usr/app/api.py
+      - type: bind
+        source: ./backend/app/utils/stat_collector.py
+        target: /usr/app/utils/stat_collector.py
       
 
         
