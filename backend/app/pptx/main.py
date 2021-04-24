@@ -3,7 +3,7 @@ import lxml.etree as etree
 import uuid
 import json
 from typing import List
-from core import extract_slide_mapping,prepare_sections,replace_slides, compile_sections
+from .core import extract_slide_mapping,prepare_sections,replace_slides, compile_sections
 
 # folder="output"
 # pres = Presentation('master.pptx')

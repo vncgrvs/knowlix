@@ -1,0 +1,14 @@
+# Delete all containers #
+docker rm -f $(docker ps -a -q) 
+
+# Delete all images
+docker system prune -a
+
+# branch & create new folder
+git worktree add -b <new branch name> <path to branch> master
+
+# push to master in remote
+git push origin some-branch
+
+# path on server
+/docker-apps/knowlix/

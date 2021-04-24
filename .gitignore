@@ -11,3 +11,6 @@ data.json
 /backend/output
 *.pyc
 *.log
+/influxdb
+primary*
+db-backup
